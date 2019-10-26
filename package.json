@@ -1,0 +1,80 @@
+{
+  "name": "@imbueapp/mockingbird",
+  "version": "0.0.1",
+  "description": "API mocking framework for load and functional API testing",
+  "main": "index.js",
+  "scripts": {
+    "postinstall": "npx tsc",
+    "dev": "tsc-watch --onSuccess \"node ./dist/server.js\"",
+    "start": "npx pm2 start pm2.yaml",
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "ssh://git@github.com:sasasavic82/mockingbird.git"
+  },
+  "dependencies": {
+    "@types/compression": "^1.0.1",
+    "@types/cors": "^2.8.6",
+    "@types/dotenv": "^6.1.1",
+    "@types/express": "^4.17.1",
+    "@types/node": "^12.11.7",
+    "@types/request-promise": "^4.1.44",
+    "@types/supertest": "^2.0.8",
+    "@types/swagger-ui-express": "^3.0.1",
+    "compression": "^1.7.4",
+    "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
+    "express": "^5.0.0-alpha.7",
+    "pm2": "^4.1.2",
+    "request": "^2.88.0",
+    "request-promise": "^4.2.4",
+    "supertest": "^4.0.2",
+    "swagger-ui-express": "^4.1.2",
+    "tsc-watch": "^4.0.0",
+    "typescript": "^3.6.4"
+  },
+  "devDependencies": {
+    "@types/jest": "^24.0.19",
+    "asciify": "^1.3.5",
+    "tslint": "^5.20.0",
+    "tslint-jest": "1.0.5",
+    "ts-jest": "^24.1.0",
+    "tslint-config-prettier": "1.18.0",
+    "jest": "^24.9.0",
+    "lint-staged": "^9.4.1",
+    "prettier": "^1.18.2"
+  },
+  "lint-staged": {
+    "*.js": [
+      "tslint --format codeframe --fix",
+      "git add"
+    ],
+    "*.{json,yaml,yml,md}": [
+      "prettier --write",
+      "git add"
+    ]
+  },
+  "jest": {
+    "verbose": true,
+    "transform": {
+      "^.+\\.tsx?$": "ts-jest"
+    },
+    "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$",
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js",
+      "jsx",
+      "json",
+      "node"
+    ]
+  },
+  "keywords": [
+    "mocking",
+    "api",
+    "services"
+  ],
+  "author": "Sasa Savic, <sasa@imbue.app>",
+  "license": "MIT"
+}
