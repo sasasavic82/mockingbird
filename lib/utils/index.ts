@@ -2,7 +2,7 @@ import { Router, Request, Response, NextFunction } from "express";
 
 type Wrapper = ((router: Router) => void);
 
-export const applyMiddleware = (
+export const buildMiddleware = (
     middlewareWrappers: Wrapper[],
     router: Router
 ) => {
@@ -23,7 +23,7 @@ type Route = {
     handler: Handler | Handler[]
 };
 
-export const applyRoutes = (routes: Route[], router: Router) => {
+export const buildRoutes = (routes: Route[], router: Router) => {
     for(const route of routes) {
         const { method, path, handler } = route;
         (router as any)[method](path, handler);

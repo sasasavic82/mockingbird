@@ -2,13 +2,13 @@ import {
     handleCors,
     handleBodyRequestParsing,
     handleCompression
-  } from "./common";
-  
-//  import { handleAPIDocs } from "./apiDocs";
-  
-  export default [
+} from "./common";
+
+import serverErrors from "./errorHandlers";
+
+export default [
+    ...serverErrors,
     handleCors,
     handleBodyRequestParsing,
     handleCompression,
-    //handleAPIDocs
-  ];
+];

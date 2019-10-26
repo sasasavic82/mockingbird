@@ -6,8 +6,9 @@
   "scripts": {
     "postinstall": "npx tsc",
     "dev": "tsc-watch --onSuccess \"node ./dist/server.js\"",
-    "start": "npx pm2 start pm2.yaml",
-    "test": "jest"
+    "start": "npx run print:project && npx pm2 start pm2.yaml",
+    "test": "jest",
+    "print:project": "asciify ' mockingbird ' -f puffy"
   },
   "repository": {
     "type": "git",

@@ -1,9 +1,9 @@
 {
     "swagger": "2.0",
     "info": {
-      "version": "1.0.0"
+      "version": "0.0.1"
     },
-    "host": "localhost:3000",
+    "host": "localhost:3333",
     "basePath": "/api/v1",
     "schemes": ["http"],
     "produces": ["application/json"],
@@ -22,16 +22,7 @@
           },
           "content": {
             "application/json": {}
-          },
-          "parameters": [
-            {
-              "name": "q",
-              "in": "query",
-              "description": "Specifies the query string",
-              "required": true,
-              "type": "string"
-            }
-          ]
+          }
         }
       }
     }
