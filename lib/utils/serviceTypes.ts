@@ -1,4 +1,3 @@
-
 export class Request<T> {
     constructor(private _request: T) {
     }
@@ -16,3 +15,4 @@ export type KeyValue<K, V> = {
     key: K,
     value: V
 }
+

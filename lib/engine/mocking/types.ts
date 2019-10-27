@@ -1,10 +1,11 @@
 import { KeyValue } from "../../utils/serviceTypes";
+import { Request, Response } from "express";
 
 export type MockingResult = "success" | "failure";
 
 export type DelayType = "lognormal" | "uniform" | "chunked_dribble" | "fixed";
 
-export type FaultTypes = "empty_response" | "malformed_response" | "random_data_response" | "connection_reset_by_peer";
+export type FaultTypes = "no_fault" | "empty_response" | "malformed_response" | "random_data_response" | "connection_reset_by_peer";
 
 export type LognormalDelay = {
     median: number, // 90
@@ -24,18 +25,28 @@ export type FixedDelay = {
     fixedDelay?: number // 1000
 }
 
+export type HeaderSettings = {
+    injectRandom?: boolean,
+    permutate?: boolean
+    extraHeaders?: KeyValue<string, string>[]
+}
+
+export type BodySettings = {
+    randomRemove: boolean,
+    randomContentType: boolean
+}
+
 export type Settings = {
-    successPercentage?: number,
-    permutateBody?: boolean,
-    permutateHeaders?: boolean,
+    failurePercentage?: number,
+    body?: BodySettings,
+    headers?: HeaderSettings,
     fault?: FaultTypes,
     delay?: LognormalDelay | UniformDelay | ChunkedDribbleDelay | FixedDelay
 }
 
 export type IncomingData = {
-    headers?: KeyValue<string, string>[],
-    body?: any | object,
-    settings: Settings
+    request: Request,
+    response: Response
 }
 
 export type MockingError = {
@@ -52,3 +63,4 @@ export type Response<T> = {
     result: MockingResult,
     response: T | MockingError
 }
+
