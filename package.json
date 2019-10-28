@@ -6,7 +6,7 @@
   "scripts": {
     "postinstall": "npx tsc",
     "dev": "tsc-watch --onSuccess \"node ./dist/server.js\"",
-    "start": "npx run print:project && npx pm2 start cluster.yaml",
+    "start": "npm run print:project && npx pm2 start cluster.yam",
     "test": "jest",
     "print:project": "asciify ' mockingbird ' -f puffy"
   },
