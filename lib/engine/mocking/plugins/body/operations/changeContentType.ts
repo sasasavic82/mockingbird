@@ -2,6 +2,9 @@
 import { Response } from "express";
 import { BodySettings } from "../../../types";
 import { randomBetween } from "../../../../../utils/tools"
+import chalk from "chalk";
+
+const log = console.log;
 
 const mimeTypes = [
     "application/javascript",
@@ -27,8 +30,8 @@ const mimeTypes = [
 ];
 
 export default (res: Response, settings: BodySettings): void => {
-    console.log("[body] alter content type");
     if(settings.randomContentType) {
+        log("------ " + chalk.red.bgWhite.bold("body: alter content type") + " ------")
         let contentType: string = mimeTypes[randomBetween(0, mimeTypes.length - 1)];
         console.log(`changing to: ${contentType}`)
         res.set("Content-Type", contentType);

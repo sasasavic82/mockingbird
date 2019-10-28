@@ -3,16 +3,20 @@
 import { Request, Response, NextFunction } from "express";
 import { IncomingData, Operation, HeaderSettings } from "../../types";
 import { passed, randomBetween } from "../../../../utils/tools"
-
 import headerOperations from "./operations";
+import chalk from "chalk";
+
+const log = console.log;
 
 const headers = (req: Request, res: Response, next: NextFunction) => {
     let incomingData = res.locals as any as IncomingData;
 
-    console.log(`plugin: headers`);
+
 
     if (!incomingData.settings.headers)
         return next();
+
+    log("------ " + chalk.red.bgWhite.bold("headers") + " ------")
 
     let pass = passed(incomingData.settings.failurePercentage);
 
@@ -21,7 +25,7 @@ const headers = (req: Request, res: Response, next: NextFunction) => {
 
     let settings: HeaderSettings = incomingData.settings.headers;
 
-    switch(incomingData.settings.headers.operation) {
+    switch (incomingData.settings.headers.operation) {
         case Operation.Random:
             headerOperations[randomBetween(0, headerOperations.length - 1)](res, settings);
             break;
@@ -31,7 +35,7 @@ const headers = (req: Request, res: Response, next: NextFunction) => {
         default:
             break;
     }
-    
+
     res.locals = incomingData;
 
     next();

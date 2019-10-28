@@ -5,11 +5,14 @@ import { IncomingData, BodySettings } from "../../types";
 import { passed } from "../../../../utils/tools"
 
 import { changeContentType, randomRemove } from "./operations";
+import chalk from "chalk";
+
+const log = console.log;
 
 const body = (req: Request, res: Response, next: NextFunction) => {
     let incomingData = res.locals as any as IncomingData;
 
-    console.log(`plugin: body`);
+    log("------ " + chalk.red.bgWhite.bold("body") + " ------")
 
     if (!incomingData.settings.body)
         return next();
@@ -25,12 +28,8 @@ const body = (req: Request, res: Response, next: NextFunction) => {
         incomingData.body = randomRemove(incomingData.body);
 
     if(body.randomContentType)
-        incomingData.body = changeContentType(res, body);
+        changeContentType(res, body);
 
-    console.log('wowwwwwww')
-    console.log(incomingData.body);
-    console.log('wowwwwwww')
-    
     res.locals = incomingData;
 
     next();
