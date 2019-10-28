@@ -1,5 +1,5 @@
-import { Request } from "../../utils/serviceTypes"
-import { Response, IncomingData, ProcessedResponse, MockingResult, Settings } from "./types";
+import { IncomingRequest } from "../../utils/serviceTypes"
+import { Response, IncomingData, ProcessedResponse, Settings, MockingResult } from "./types";
 import {  } from "uuid";
 import uuid = require("uuid");
 
@@ -15,7 +15,7 @@ export class MockingEngine {
         this.settingsList = [];
     }
 
-    public ingest(incoming: Request<IncomingData>): Promise<Response<ProcessedResponse>> {
+    public ingest(incoming: IncomingRequest<IncomingData>): Promise<Response<ProcessedResponse>> {
 
         let data: ProcessedResponse = {
             headers: [{
@@ -26,14 +26,14 @@ export class MockingEngine {
         }
 
         let response: Response<ProcessedResponse> = {
-            result: "success",
+            result: MockingResult.Success,
             response: data
         }
 
         return Promise.resolve(response);
     }
 
-    public settings(settings: Request<Settings>): Promise<SettingsItem> {
+    public settings(settings: IncomingRequest<Settings>): Promise<SettingsItem> {
         let settingsItem: SettingsItem = {
             key: uuid.v4(),
             settings: settings.request

@@ -23,9 +23,9 @@ buildMiddleware(middleware, router);
 buildRoutes(routes, router);
 buildMiddleware(errorHandlers, router);
 
-const { PORT = 3333 } = process.env;
+const { PORT = 4444 } = process.env;
 const server = http.createServer(router);
 
 server.listen(PORT, () => {
-    console.log(`Testrig Mock server is running http://localhost:${PORT}...`);
+    console.log(`Testrig Mock server is running http://localhost:${PORT}...`); 
 });

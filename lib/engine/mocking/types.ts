@@ -1,31 +1,57 @@
 import { KeyValue } from "../../utils/serviceTypes";
-import { Request, Response } from "express";
+import { Request, Response, NextFunction } from "express";
 
-export type MockingResult = "success" | "failure";
+//export type MockingResult = "success" | "failure";
 
-export type DelayType = "lognormal" | "uniform" | "chunked_dribble" | "fixed";
+export enum MockingResult {
+    Success = "success",
+    Failure = "failure"
+}
 
-export type FaultTypes = "no_fault" | "empty_response" | "malformed_response" | "random_data_response" | "connection_reset_by_peer";
+export enum DelayType {
+    Lognormal = "lognormal",
+    Uniform = "uniform",
+    ChunkedDribble = "chunked_dribble",
+    Fixed = "fixed"
+}
+
+export enum FaultTypes {
+    NoFault = "no_fault",
+    EmptyResponse = "empty_response",
+    MalformedResponse = "malformed_response",
+    RandomDataResponse = "random_data_response",
+    ConnectioResetByPeer = "connection_reset_by_peer"
+}
+
+export enum Operation {
+    Random = "random",
+    All = "all"
+}
 
 export type LognormalDelay = {
+    type: DelayType.Lognormal,
     median: number, // 90
     sigma: number // 0.1
 }
 
 export type UniformDelay = {
+    type: DelayType.Uniform,
     lower: number, // 15
     upper: number // 25
 }
 
 export type ChunkedDribbleDelay = {
+    type: DelayType.ChunkedDribble,
     numberOfChunks: number, // 5
     duration: number // 1000
 }
 export type FixedDelay = {
-    fixedDelay?: number // 1000
+    type: DelayType.Fixed,
+    delay: number // 1000
 }
 
 export type HeaderSettings = {
+    operation: Operation,
     injectRandom?: boolean,
     permutate?: boolean
     extraHeaders?: KeyValue<string, string>[]
@@ -45,8 +71,8 @@ export type Settings = {
 }
 
 export type IncomingData = {
-    request: Request,
-    response: Response
+    body: any | object,
+    settings: Settings
 }
 
 export type MockingError = {
@@ -64,3 +90,7 @@ export type Response<T> = {
     response: T | MockingError
 }
 
+export type WrappedResponse<T> = {
+    data: T,
+    (req: Request, res: Response, next: NextFunction): void
+}

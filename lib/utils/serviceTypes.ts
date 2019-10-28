@@ -1,4 +1,4 @@
-export class Request<T> {
+export class IncomingRequest<T> {
     constructor(private _request: T) {
     }
 

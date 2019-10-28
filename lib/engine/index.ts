@@ -1,3 +1,3 @@
-import mockRoutes from "./routes";
+import mockRoutes from "./mocking/routes";
 
 export default [...mockRoutes];
