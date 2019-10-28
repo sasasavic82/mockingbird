@@ -15,11 +15,8 @@ export enum DelayType {
     Fixed = "fixed"
 }
 
-export enum FaultTypes {
-    NoFault = "no_fault",
+export enum ConnectionFaultType {
     EmptyResponse = "empty_response",
-    MalformedResponse = "malformed_response",
-    RandomDataResponse = "random_data_response",
     ConnectioResetByPeer = "connection_reset_by_peer"
 }
 
@@ -66,7 +63,7 @@ export type Settings = {
     failurePercentage?: number,
     body?: BodySettings,
     headers?: HeaderSettings,
-    fault?: FaultTypes,
+    connection?: ConnectionFaultType,
     delay?: LognormalDelay | UniformDelay | ChunkedDribbleDelay | FixedDelay
 }
 

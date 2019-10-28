@@ -1,3 +1,7 @@
+import chalk from "chalk";
+
+const log = console.log;
+
 export type ProbabilityResponse = {
     random: number | undefined,
     passed: boolean
@@ -11,7 +15,7 @@ export const passed = (probabilityOfFailure: number | undefined): ProbabilityRes
     let random: number = Math.random();
     let hasPassed: boolean = random >= probabilityOfFailure
 
-    console.log(`probability: ${probabilityOfFailure}, random: ${random}, passed: ${hasPassed}`);
+    log("probability: " + chalk.yellow(`${probabilityOfFailure}`) + `, ${hasPassed ? chalk.green.bold("passed") : chalk.red.bold("failed")}`)
 
     return {
         random: random,

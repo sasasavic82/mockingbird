@@ -1,29 +1,25 @@
 
 
 import { randomBetween } from "../../../../../utils/tools"
+import chalk from "chalk";
+
+const log = console.log;
 
 const removeRandomArray = (data: Array<any>): Array<any> => {
-    let random: number = randomBetween(0, data.length - 1);
-    data = data.splice(random, 1);
-    console.log(data);
+    data.splice(randomBetween(0, data.length - 1), 1);
     return data;
 }
 
 const removeRandomProperty = (data: any): any => {
-//    delete data[
-//        Object.keys(data)[
-//            randomBetween(0, Object.keys(data).length -1)]];
-
-    let dat = data[
+    delete data[
         Object.keys(data)[
             randomBetween(0, Object.keys(data).length -1)]];
 
-    return dat;
+    return data;
 }
 
-
 export default (body: any[] | any): any[] | any | undefined => {
-    console.log("[headers] randomly removing properties and items...");
+    log("------ " + chalk.red.bgWhite.bold("headers: random remove") + " ------")
     if(Array.isArray(body))
         return removeRandomArray(body);
     else 

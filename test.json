@@ -1,0 +1,27 @@
+{
+	"settings": {
+		"failurePercentage": 0.2,
+		"fault": "no_fault",
+		"delay": {
+			"type": "fixed",
+			"delay": 1000
+		},
+		"body": {
+			"randomRemove": true
+		},
+		"headers": {
+			"operation": "random",
+			"injectRandom": true,
+			"permutate": true,
+			"extraHeaders": [{
+				"key": "sash_key",
+				"value": "sash_value"
+			}]
+        },
+        "connection": "connection_reset_by_peer"
+	},
+	"body": {
+		"name": "ian",
+		"surname": "vu"
+	}
+}
