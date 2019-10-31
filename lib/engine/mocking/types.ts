@@ -8,43 +8,12 @@ export enum MockingResult {
     Failure = "failure"
 }
 
-export enum DelayType {
-    Lognormal = "lognormal",
-    Uniform = "uniform",
-    ChunkedDribble = "chunked_dribble",
-    Fixed = "fixed"
-}
 
-export enum ConnectionFaultType {
-    EmptyResponse = "empty_response",
-    ConnectioResetByPeer = "connection_reset_by_peer"
-}
 
 export enum Operation {
     Random = "random",
-    All = "all"
-}
-
-export type LognormalDelay = {
-    type: DelayType.Lognormal,
-    median: number, // 90
-    sigma: number // 0.1
-}
-
-export type UniformDelay = {
-    type: DelayType.Uniform,
-    lower: number, // 15
-    upper: number // 25
-}
-
-export type ChunkedDribbleDelay = {
-    type: DelayType.ChunkedDribble,
-    numberOfChunks: number, // 5
-    duration: number // 1000
-}
-export type FixedDelay = {
-    type: DelayType.Fixed,
-    delay: number // 1000
+    All = "all",
+    None = "none"
 }
 
 export type HeaderSettings = {
@@ -59,17 +28,17 @@ export type BodySettings = {
     randomContentType: boolean
 }
 
-export type Settings = {
-    failurePercentage?: number,
-    body?: BodySettings,
-    headers?: HeaderSettings,
-    connection?: ConnectionFaultType,
-    delay?: LognormalDelay | UniformDelay | ChunkedDribbleDelay | FixedDelay
+
+
+
+export interface ExtendableSettings<T> {
+    failurePercentage: number,
+    [key: string]: T | any;
 }
 
 export type IncomingData = {
     body: any | object,
-    settings: Settings
+    settings: ExtendableSettings<any>
 }
 
 export type MockingError = {
