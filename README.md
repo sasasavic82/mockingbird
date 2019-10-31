@@ -1,6 +1,6 @@
 # Mockingbird
 
-[![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/3335/badge)](https://bestpractices.coreinfrastructure.org/projects/3335)
+[![NPM version][npm-image]][npm-url] [![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/3335/badge)](https://bestpractices.coreinfrastructure.org/projects/3335)
 
 ![Alt text](./docs/mockingbird.png)
 
@@ -28,6 +28,31 @@ Mockingbird is completely stateless, making it extremely and elastically scalabl
 like to run against the request.
 
 ----
+
+## Mockingbird is awesome
+> This project is powered by github 🌟s ^ go ahead and [star it please](https://github.com/sasasavic82/mockingbird/stargazers).
+
+> With great languages comes great responsibility!!!
+
+### Why
+There is a need for an open source fault simulation framework ... why not?
+
+### Requirements
+
+* NodeJS v10
+
+## Usage
+
+Get it (global installation):
+```
+npm install @imbueapp/mockingbird -g
+```
+
+Run it passing in the directory you want to serve up:
+```
+alm .
+```
+
 ## Mockingbird simulation layers
 Mockingbird comes with a number of simulation middleware layers. As HTTP requests are
 traversed through the different layers, a probability of fault occurence is calculated.
@@ -262,13 +287,10 @@ Abruptly end the connection with a 200 OK HTTP response, but don't provide a bod
 
 ## To start developing Mockingbird using the npm package
 
-The [community repository] hosts all information about
-building Kubernetes from source, how to contribute code
-and documentation, who to contact about what, etc.
+Developing with Mockingbird is easy, All you need to do is inclide the package 
+in your `package.json` file.
 
-If you want to build Kubernetes right away there are two options:
-
-##### You have a working [Go environment].
+##### You have a working [Node environment].
 
 ```
 
@@ -290,3 +312,5 @@ and I will try and get back to you asap :)
 [NPM]: https://www.npmjs.com/
 [Serverless]: https://serverless.com/
 [LinkedIn]: https://www.linkedin.com/in/sasasavic/
+[npm-image]: https://img.shields.io/npm/v/alm.svg?style=flat
+[npm-url]: https://npmjs.org/package/alm
