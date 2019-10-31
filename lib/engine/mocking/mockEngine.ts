@@ -106,10 +106,10 @@ export class MockingEngine implements ISimulation {
     protected simulatorLayers: ISimulation[] = [];
 
     constructor() {
-        this.simulatorLayers = this.loadSimulators();
+        this.simulatorLayers = this.internalLoadSimulators();
     }
 
-    public loadSimulator(simulators: ISimulation | ISimulation[]): IDisposable[] {
+    public loadSimulators(simulators: ISimulation | ISimulation[]): IDisposable[] {
 
         if(!Array.isArray(simulators)) {
             return [
@@ -132,7 +132,7 @@ export class MockingEngine implements ISimulation {
 
         let lastSimulator = this.simulatorLayers.pop();
         this.simulatorLayers.push(simulator);
-        
+
         if(lastSimulator)
             this.simulatorLayers.push(lastSimulator);
 
@@ -171,7 +171,7 @@ export class MockingEngine implements ISimulation {
         next();
     }
 
-    private loadSimulators(): ISimulation[] {
+    private internalLoadSimulators(): ISimulation[] {
 
         let defaultEndSimulatorHandler: SimulationHandler = 
             (req: SimulatorRequest, res: SimulatorResponse): any => {

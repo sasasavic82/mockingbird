@@ -4,7 +4,7 @@ import { EmptySimulator, DelaySimulator, ConnectionSimulator, HeaderSimulator, B
 
 let engine: MockingEngine = new MockingEngine();
 
-engine.loadSimulator([
+engine.loadSimulators([
   new EmptySimulator({ namespace: "empty" }),
   new DelaySimulator({ namespace: "delay"}),
   new ConnectionSimulator({ namespace: "connection" }),
