@@ -75,7 +75,7 @@ about the server.
 They are also used as important routing mechanisms, particularly if services rely on the additional data that
 you would not traditionally convey in the HTTP body.
 
-'''
+```
 {
 	"settings": {
 		"failurePercentage": 0.2,
@@ -94,7 +94,7 @@ you would not traditionally convey in the HTTP body.
 		"handle": "sasasavic82"
 	}
 }
-'''
+```
 
 #### Inject extra headers
 Given *Mockingbird* has a programmable interface, you may specify additional headers as part of your request. If
@@ -120,7 +120,7 @@ part of the simulation configuration.
 
 Example below, delaying for `1000ms` (1 second)
 
-'''
+```
 {
 	"settings": {
 		"failurePercentage": 0.2,
@@ -135,7 +135,7 @@ Example below, delaying for `1000ms` (1 second)
 		"handle": "sasasavic82"
 	}
 }
-'''
+```
 
 #### Uniform delay
 **TBA**
@@ -146,7 +146,7 @@ upper - Upper bound of the range, inclusive.
 
 For instance, to simulate a stable latency of 20ms +/- 5ms, use lower = 15 and upper = 25.
 
-'''
+```
 {
 	"settings": {
 		"failurePercentage": 0.2,
@@ -162,7 +162,7 @@ For instance, to simulate a stable latency of 20ms +/- 5ms, use lower = 15 and u
 		"handle": "sasasavic82"
 	}
 }
-'''
+```
 
 #### Lognormal delay
 **TBA**
@@ -173,7 +173,7 @@ A lognormal distribution is a pretty good approximation of long tailed latencies
 median - The 50th percentile of latencies.
 sigma - Standard deviation. The larger the value, the longer the tail.
 
-'''
+```
 {
 	"settings": {
 		"failurePercentage": 0.2,
@@ -189,7 +189,7 @@ sigma - Standard deviation. The larger the value, the longer the tail.
 		"handle": "sasasavic82"
 	}
 }
-'''
+```
 
 #### Chunk dribble delay
 **TBA**
@@ -201,7 +201,7 @@ It takes two parameters:
 numberOfChunks - how many chunks you want your response body divided up into
 totalDuration - the total duration you want the response to take in milliseconds
 
-'''
+```
 {
 	"settings": {
 		"failurePercentage": 0.2,
@@ -217,7 +217,7 @@ totalDuration - the total duration you want the response to take in milliseconds
 		"handle": "sasasavic82"
 	}
 }
-'''
+```
 
 ### Connection fault simulation
 Sometimes you may want to simulate various connection faults
@@ -225,7 +225,7 @@ Sometimes you may want to simulate various connection faults
 #### Connection reset by peer
 Abruptly end an existing connection, not returning a status or a payload.
 
-'''
+```
 {
 	"settings": {
 		"failurePercentage": 0.2,
@@ -237,12 +237,12 @@ Abruptly end an existing connection, not returning a status or a payload.
 		"handle": "sasasavic82"
 	}
 }
-'''
+```
 
 #### Empty response
 Abruptly end the connection with a 200 OK HTTP response, but don't provide a body.
 
-'''
+```
 {
 	"settings": {
 		"failurePercentage": 0.2,
@@ -254,7 +254,7 @@ Abruptly end the connection with a 200 OK HTTP response, but don't provide a bod
 		"handle": "sasasavic82"
 	}
 }
-'''
+```
 
 ## To start using Mockingbird as a stand-alone cli
 
