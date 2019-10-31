@@ -1,21 +1,13 @@
-import chalk from "chalk";
-
-const log = console.log;
-
-export type ProbabilityResponse = {
+export const passed = (probabilityOfFailure: number | undefined): {
     random: number | undefined,
     passed: boolean
-}
+} => {
 
-export const passed = (probabilityOfFailure: number | undefined): ProbabilityResponse => {
-
-    if(probabilityOfFailure == undefined)
+    if (probabilityOfFailure == undefined)
         probabilityOfFailure = 0;
-    
+
     let random: number = Math.random();
     let hasPassed: boolean = random >= probabilityOfFailure
-
-    //log("probability: " + chalk.yellow(`${probabilityOfFailure}`) + `, ${hasPassed ? chalk.green.bold("passed") : chalk.red.bold("failed")}`)
 
     return {
         random: random,
@@ -29,16 +21,16 @@ export const randomBetween = (min: number, max: number): number => {
 }
 
 export const checkType = <T, K>(obj?: T, defaultValue: T = {} as T): T => {
-    if(obj === undefined || obj === null)
+    if (obj === undefined || obj === null)
         return defaultValue;
     return obj;
 }
 
-export const maybeWithDefault = <T>(obj?: T) => 
+export const maybeWithDefault = <T>(obj?: T) =>
     <T>(defaultValue: T) => {
-        if(obj === undefined || obj == null) return defaultValue;
-    return obj;
-}
+        if (obj === undefined || obj == null) return defaultValue;
+        return obj;
+    }
 
 export const removeRandomArray = (data: Array<any>): Array<any> => {
     data.splice(randomBetween(0, data.length - 1), 1);
@@ -48,7 +40,7 @@ export const removeRandomArray = (data: Array<any>): Array<any> => {
 export const removeRandomProperty = (data: any): any => {
     delete data[
         Object.keys(data)[
-            randomBetween(0, Object.keys(data).length -1)]];
+        randomBetween(0, Object.keys(data).length - 1)]];
 
     return data;
 }

@@ -53,6 +53,14 @@ Run it
 mockingbird
 ```
 
+Mockingbird runs on default port `3333`, but you can set a environmental variable `MOCKINGBIRD_SERVICE_PORT` to your desired port and then run `mockingbird` command.
+
+```
+export MOCKINGBIRD_SERVICE_PORT=5555
+```
+
+
+
 ## Mockingbird simulation layers
 Mockingbird comes with a number of simulation middleware layers. As HTTP requests are
 traversed through the different layers, a probability of fault occurence is calculated.
@@ -312,5 +320,5 @@ and I will try and get back to you asap :)
 [NPM]: https://www.npmjs.com/
 [Serverless]: https://serverless.com/
 [LinkedIn]: https://www.linkedin.com/in/sasasavic/
-[npm-image]: https://img.shields.io/badge/npm-v0.0.4-blue
+[npm-image]: https://img.shields.io/badge/npm-v0.1.0-blue
 [npm-url]: https://www.npmjs.com/package/@imbueapp/mockingbird

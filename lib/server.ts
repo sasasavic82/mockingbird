@@ -27,5 +27,5 @@ const { MOCKINGBIRD_SERVICE_PORT = 4444 } = process.env;
 const server = http.createServer(router);
 
 server.listen(MOCKINGBIRD_SERVICE_PORT, () => {
-    console.log(`Testrig Mock server is running http://localhost:${MOCKINGBIRD_SERVICE_PORT}...`); 
+    console.log(`🕊️ mockingbird 🕊️ server is running http://localhost:${MOCKINGBIRD_SERVICE_PORT}...`); 
 });
