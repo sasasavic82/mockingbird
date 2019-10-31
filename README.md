@@ -320,5 +320,5 @@ and I will try and get back to you asap :)
 [NPM]: https://www.npmjs.com/
 [Serverless]: https://serverless.com/
 [LinkedIn]: https://www.linkedin.com/in/sasasavic/
-[npm-image]: https://img.shields.io/badge/npm-v0.1.2-blue
+[npm-image]: https://img.shields.io/badge/npm-v0.1.3-blue
 [npm-url]: https://www.npmjs.com/package/@imbueapp/mockingbird

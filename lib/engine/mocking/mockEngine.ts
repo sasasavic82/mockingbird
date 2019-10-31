@@ -1,22 +1,19 @@
 
 import { Request, Response, NextFunction } from "express";
-
 import { IncomingData, ExtendableSettings, ISimulation, SimulatorResponse, 
     SimulatorRequest, NextSimulator, SimulationConfig, SimulatorContext, 
     SimulatorContextCallback, ProbabilityResponse, IDisposable, SimulationHandler, ResponseStatus } from "./types";
-
 import { SimulatorExistsError } from "./errors";
-
 import { maybeWithDefault } from "../../utils/tools";
-
 import chalk from "chalk";
+
+// Monkeypatch console.log
 const logger = console.log;
 
 
 export abstract class BaseSimulator<T> implements ISimulation {
 
     public namespace: string;
-
     protected config: SimulationConfig;
 
     constructor(config: SimulationConfig) {
@@ -25,18 +22,14 @@ export abstract class BaseSimulator<T> implements ISimulation {
 
         // set the defaults
         this.config.debug = maybeWithDefault(this.config.debug)(true)
-
         this.log("initialize", `Loaded ${this.constructor.name} simulator`);
     }
 
     ingest(req: SimulatorRequest, res: SimulatorResponse, next: NextSimulator): any {
 
-        console.log("")
-
         this.log("ingest", `Processing in ${this.constructor.name}`);
 
         let incomingData: IncomingData = res.locals as IncomingData;
-
         let settings: ExtendableSettings<T> = this.castSettings(incomingData.settings);
 
         if(this.passed(settings.failurePercentage).passed)
@@ -47,9 +40,8 @@ export abstract class BaseSimulator<T> implements ISimulation {
         if(context.settings == undefined)
             return next();
 
-        this.evaluate(context, (context) => {
-            return next();
-        });
+        // Call children
+        this.evaluate(context, (context) =>  next());
     }
 
     private castSettings(globalSettings: any) : ExtendableSettings<T>  {
@@ -96,14 +88,9 @@ export abstract class BaseSimulator<T> implements ISimulation {
 
 }
 
-/**
-
- */
-
 export class MockingEngine implements ISimulation {
 
     public namespace: string = "mockingengine";
-
     protected simulatorLayers: ISimulation[] = [];
 
     constructor() {
@@ -116,22 +103,35 @@ export class MockingEngine implements ISimulation {
             return [this.internalLoad(simulators as ISimulation)];
 
         return (simulators as ISimulation[]).map((simulator) => this.internalLoad(simulator));
-        
     }
 
     private internalLoad(simulator: ISimulation): IDisposable {
 
+        /*
+        * Iterate through all simulation layers, checking if there is already an existing layer
+        * NOTE: This constrain will need to be lifted, once we allow extending simulator interfaces
+        * such that we can merge two simulator namespaces.
+        */
         this.simulatorLayers.forEach((layer) => {
             if(layer.namespace === simulator.namespace)
                 throw new SimulatorExistsError(`Simulator ${simulator.namespace} already exists in the namespace.`);
         });
 
+        /*
+        * We pop out the last layer and make sure we re-insert it once we add a new layer.
+        * Last layer (final-handler) must remain at the bottom of the stack as it is the
+        * final HTTP client response point (unless previous layers complete the HTTP request
+        * due to simulation execution that may cause a client response)
+        */
         let lastSimulator = this.simulatorLayers.pop();
         this.simulatorLayers.push(simulator);
 
         if(lastSimulator)
             this.simulatorLayers.push(lastSimulator);
 
+        /** 
+        * Give the caller an opportunity to removea layer.
+        */
         return {
             dispose: () => this.unloadSimulator(simulator)
         };
@@ -143,8 +143,21 @@ export class MockingEngine implements ISimulation {
             this.simulatorLayers.splice(simIndex, 1);
     }
 
+    /**
+     * This function is used to export out all of the layer handlers.
+     * The handlers are then imported into express route.
+     * 
+     * @returns SimulationHandler[]
+     */
+
     public getSimulatorHandlers(): SimulationHandler[] {
         return this.simulatorLayers.map((simulator) => {
+
+            /**
+             * We are returning `simulator.ingest(req, res, next)` as a `SimulationHandler`
+             * wrapper. This is required so thtt we don't lose context of the child `class` that
+             * inherits the `ISimulation` interface.
+             */
             return (req: Request, res: Response, next: NextFunction): void =>
                 simulator.ingest(req, res, next);
         });
@@ -167,8 +180,22 @@ export class MockingEngine implements ISimulation {
         next();
     }
 
+    /**
+     * Load all simulators. This is an internal function.
+     * NOTE: this function should dynamically load all of the simulators
+     * that live in the `simulators` folder.
+     */
     private internalLoadSimulators(): ISimulation[] {
 
+        /**
+         * We are injecting a `final-handler`, as we need to make sure
+         * we exit the simulation middleware stack gracefully if all
+         * simulations pass (by `pass`, it means the simulation failure
+         * did not execute due to probability)
+         * 
+         * @param req SimulatorRequest Request context
+         * @param res SimulatorResponse Response context
+         */
         let defaultEndSimulatorHandler: SimulationHandler = 
             (req: SimulatorRequest, res: SimulatorResponse): any => {
                 let incomingData = res.locals as any as IncomingData;
