@@ -23,7 +23,7 @@ buildMiddleware(middleware, router);
 buildRoutes(routes, router);
 buildMiddleware(errorHandlers, router);
 
-const { MOCKINGBIRD_SERVICE_PORT = 4444 } = process.env;
+const { MOCKINGBIRD_SERVICE_PORT = 3333 } = process.env;
 const server = http.createServer(router);
 
 server.listen(MOCKINGBIRD_SERVICE_PORT, () => {

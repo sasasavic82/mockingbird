@@ -1,6 +1,6 @@
 {
 	"settings": {
-		"failurePercentage": 0.2,
+		"failureProbability": 0.2,
 		"fault": "no_fault",
 		"delay": {
 			"type": "fixed",

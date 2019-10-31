@@ -9,7 +9,7 @@ export enum MockingResult {
 }
 
 export interface ExtendableSettings<T> {
-    failurePercentage: number,
+    failureProbability: number,
     [key: string]: T | any;
 }
 
