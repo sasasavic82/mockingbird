@@ -3,6 +3,9 @@
   "version": "0.0.1",
   "description": "API mocking framework for load and functional API testing",
   "main": "index.js",
+  "bin": {
+    "alm": "./bin/mockingbird"
+  },
   "scripts": {
     "postinstall": "npx tsc",
     "dev": "tsc-watch --onSuccess \"node ./dist/server.js\"",

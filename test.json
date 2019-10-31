@@ -7,10 +7,10 @@
 			"delay": 1000
 		},
 		"body": {
+			"randomContentType": true,
 			"randomRemove": true
 		},
 		"headers": {
-			"operation": "random",
 			"injectRandom": true,
 			"permutate": true,
 			"extraHeaders": [{
@@ -21,7 +21,8 @@
         "connection": "connection_reset_by_peer"
 	},
 	"body": {
-		"name": "ian",
-		"surname": "vu"
+		"name": "Sasa",
+		"surname": "Savic",
+		"handle": "sasasavic82"
 	}
 }

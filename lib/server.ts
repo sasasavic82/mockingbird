@@ -23,9 +23,9 @@ buildMiddleware(middleware, router);
 buildRoutes(routes, router);
 buildMiddleware(errorHandlers, router);
 
-const { PORT = 4444 } = process.env;
+const { MOCKINGBIRD_SERVICE_PORT = 4444 } = process.env;
 const server = http.createServer(router);
 
-server.listen(PORT, () => {
-    console.log(`Testrig Mock server is running http://localhost:${PORT}...`); 
+server.listen(MOCKINGBIRD_SERVICE_PORT, () => {
+    console.log(`Testrig Mock server is running http://localhost:${MOCKINGBIRD_SERVICE_PORT}...`); 
 });

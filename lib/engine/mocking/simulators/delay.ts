@@ -59,3 +59,12 @@ export class DelaySimulator extends BaseSimulator<DelayData> {
         return setTimeout(context.next, delayValue);
     }
 }
+
+export class ChunkedDribbleDelaySimulator extends DelaySimulator {
+    constructor(config: SimulationConfig) {
+        super(config);
+        this.namespace = "delay"
+    }
+
+    
+}
