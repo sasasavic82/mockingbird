@@ -48,9 +48,9 @@ Get it (global installation):
 npm install @imbueapp/mockingbird -g
 ```
 
-Run it passing in the directory you want to serve up:
+Run it
 ```
-alm .
+mockingbird
 ```
 
 ## Mockingbird simulation layers
