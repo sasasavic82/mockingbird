@@ -23,6 +23,7 @@ export abstract class BaseSimulator<T> implements ISimulation {
         this.config = config;
         this.namespace = config.namespace;
 
+        // set the defaults
         this.config.debug = maybeWithDefault(this.config.debug)(true)
 
         this.log("initialize", `Loaded ${this.constructor.name} simulator`);
@@ -111,16 +112,11 @@ export class MockingEngine implements ISimulation {
 
     public loadSimulators(simulators: ISimulation | ISimulation[]): IDisposable[] {
 
-        if(!Array.isArray(simulators)) {
-            return [
-                this.internalLoad(simulators as ISimulation)
-            ];
-        };
+        if(!Array.isArray(simulators))
+            return [this.internalLoad(simulators as ISimulation)];
 
-        return (simulators as ISimulation[]).map((simulator) => {
-            return this.internalLoad(simulator);
-        });
-
+        return (simulators as ISimulation[]).map((simulator) => this.internalLoad(simulator));
+        
     }
 
     private internalLoad(simulator: ISimulation): IDisposable {
