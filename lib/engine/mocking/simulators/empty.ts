@@ -1,4 +1,5 @@
-import { BaseSimulator, SimulationConfig, SimulatorContext } from "../mockEngine"
+import { BaseSimulator } from "../mockEngine"
+import { SimulationConfig, SimulatorContext } from "../types"
 
 export interface EmptyData {};
 

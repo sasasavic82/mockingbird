@@ -15,7 +15,7 @@ export const passed = (probabilityOfFailure: number | undefined): ProbabilityRes
     let random: number = Math.random();
     let hasPassed: boolean = random >= probabilityOfFailure
 
-    log("probability: " + chalk.yellow(`${probabilityOfFailure}`) + `, ${hasPassed ? chalk.green.bold("passed") : chalk.red.bold("failed")}`)
+    //log("probability: " + chalk.yellow(`${probabilityOfFailure}`) + `, ${hasPassed ? chalk.green.bold("passed") : chalk.red.bold("failed")}`)
 
     return {
         random: random,
@@ -24,7 +24,7 @@ export const passed = (probabilityOfFailure: number | undefined): ProbabilityRes
 }
 
 export const randomBetween = (min: number, max: number): number => {
-    console.log(`generating random number between ${min} and ${max}`);
+    //log(`generating random number between ${min} and ${max}`)
     return Math.floor(Math.random() * (max - min + 1) + min);
 }
 
@@ -38,4 +38,17 @@ export const maybeWithDefault = <T>(obj?: T) =>
     <T>(defaultValue: T) => {
         if(obj === undefined || obj == null) return defaultValue;
     return obj;
+}
+
+export const removeRandomArray = (data: Array<any>): Array<any> => {
+    data.splice(randomBetween(0, data.length - 1), 1);
+    return data;
+}
+
+export const removeRandomProperty = (data: any): any => {
+    delete data[
+        Object.keys(data)[
+            randomBetween(0, Object.keys(data).length -1)]];
+
+    return data;
 }

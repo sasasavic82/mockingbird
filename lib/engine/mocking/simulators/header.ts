@@ -1,5 +1,6 @@
 import { KeyValue } from "../../../utils/serviceTypes";
-import { BaseSimulator, SimulationConfig, SimulatorContext, ResponseStatus } from "../mockEngine"
+import { BaseSimulator } from "../mockEngine"
+import { SimulationConfig, SimulatorContext } from "../types";
 import { maybeWithDefault } from "../../../utils/tools";
 
 export enum ConnectionFaultType {

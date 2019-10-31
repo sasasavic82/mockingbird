@@ -1,6 +1,6 @@
 import {} from "../types"
-import { BaseSimulator, SimulationConfig, SimulatorContext, ResponseStatus } from "../mockEngine"
-
+import { BaseSimulator } from "../mockEngine"
+import { SimulationConfig, SimulatorContext, ResponseStatus } from "../types"
 
 export enum ConnectionFaultType {
     EmptyResponse = "empty_response",
@@ -10,7 +10,6 @@ export enum ConnectionFaultType {
 export type ConnectionFaultData = {
     connection: ConnectionFaultType
 }
-
 
 export class ConnectionSimulator extends BaseSimulator<ConnectionFaultData> {
     constructor(config: SimulationConfig) {
