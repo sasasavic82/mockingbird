@@ -32,7 +32,7 @@ export abstract class BaseSimulator<T> implements ISimulation {
         let incomingData: IncomingData = res.locals as IncomingData;
         let settings: ExtendableSettings<T> = this.castSettings(incomingData.settings);
 
-        if(this.passed(settings.failurePercentage).passed)
+        if(this.passed(settings.failureProbability).passed)
             return next();
 
         let context: SimulatorContext<T> = this.contextualize(incomingData.body, settings, req, res, next);

@@ -28,6 +28,40 @@ or a thousand 🤓 Being *programmable* means that with every request, you simpl
 like to run against the request and the probability of failure occurence (`0.0 - 1.0`)
 
 ----
+## How does it work
+
+It's simple - you blast your Mockingbird service endpoint (i.e. `localhost:3333/api/v1/mock`) with a tonne of `POST` requests,
+specifying a `body` payload and a `settings` payload.
+
+```
+curl -d "@data.json" -X POST http://localhost:3333/api/v1/mock
+```
+
+... `data.json` being:
+```
+{
+	"body": ..., 
+	"settings": ...
+}
+```
+
+The `body` payload represents your normal HTTP resource representation data, while `settings` represents the simulation
+settings you'd like to simulate with some level of uncertainty. For example, as part of the settings, you may specify
+the probability of the fault occurence.
+
+```{
+	"body": ..., 
+	"settings": {
+		"failureProbability": 0.2,
+		"connection": "connection_reset_by_peer"
+	}
+}
+```
+
+The above example tells the Mockingbird service to cause a `connection_reset_by_peer` (and abrupt closure of the socket),
+20% of the time
+
+
 
 ## Mockingbird is awesome
 > This project is powered by github 🌟s ^ go ahead and [star it please](https://github.com/sasasavic82/mockingbird/stargazers).
@@ -78,7 +112,7 @@ A variety of simulations that attempt to permutate the original body, such that 
 ```
 {
 	"settings": {
-		"failurePercentage": 0.2,
+		"failureProbability": 0.2,
 		"body": {
 			"randomContentType": true,
 			"randomRemove": true
@@ -113,7 +147,7 @@ you would not traditionally convey in the HTTP body.
 ```
 {
 	"settings": {
-		"failurePercentage": 0.2,
+		"failureProbability": 0.2,
 		"headers": {
 			"injectRandom": true,
 			"permutate": true,
@@ -158,7 +192,7 @@ Example below, delaying for `1000ms` (1 second)
 ```
 {
 	"settings": {
-		"failurePercentage": 0.2,
+		"failureProbability": 0.2,
 		"delay": {
 			"type": "fixed",
 			"delay": 1000
@@ -184,7 +218,7 @@ For instance, to simulate a stable latency of 20ms +/- 5ms, use lower = 15 and u
 ```
 {
 	"settings": {
-		"failurePercentage": 0.2,
+		"failureProbability": 0.2,
 		"delay": {
 			"type": "uniform",
 			"lower": 15,
@@ -211,7 +245,7 @@ sigma - Standard deviation. The larger the value, the longer the tail.
 ```
 {
 	"settings": {
-		"failurePercentage": 0.2,
+		"failureProbability": 0.2,
 		"delay": {
 			"type": "lognormal",
 			"median": 95,
@@ -239,7 +273,7 @@ totalDuration - the total duration you want the response to take in milliseconds
 ```
 {
 	"settings": {
-		"failurePercentage": 0.2,
+		"failureProbability": 0.2,
 		"delay": {
 			"type": "lognormal",
 			"numberOfChunks": 50,
@@ -263,7 +297,7 @@ Abruptly end an existing connection, not returning a status or a payload.
 ```
 {
 	"settings": {
-		"failurePercentage": 0.2,
+		"failureProbability": 0.2,
         "connection": "connection_reset_by_peer"
 	},
 	"body": {
@@ -280,7 +314,7 @@ Abruptly end the connection with a 200 OK HTTP response, but don't provide a bod
 ```
 {
 	"settings": {
-		"failurePercentage": 0.2,
+		"failureProbability": 0.2,
         "connection": "empty_response"
 	},
 	"body": {
@@ -292,8 +326,10 @@ Abruptly end the connection with a 200 OK HTTP response, but don't provide a bod
 ```
 
 ## To start using Mockingbird as a stand-alone cli
+IN-PROGRESS
 
 ## To run Mockingbird as a Serverless app
+IN-PROGRESS
 
 ## To start developing Mockingbird using the npm package
 
@@ -301,13 +337,13 @@ Developing with Mockingbird is easy, All you need to do is inclide the package
 in your `package.json` file.
 
 ##### You have a working [Node environment].
-
+IN-PROGRESS
 ```
 
 ```
 
 ##### You have a working [Docker environment].
-
+IN-PROGRESS
 ```
 
 ```
@@ -315,8 +351,7 @@ in your `package.json` file.
 
 ## Support
 
-If you need support, please ping me on [LinkedIn],
-and I will try and get back to you asap :)
+For support, please please raise a support ticket :)
 
 
 [NPM]: https://www.npmjs.com/
