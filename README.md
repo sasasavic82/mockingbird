@@ -2,7 +2,7 @@
 
 [![NPM version][npm-image]][npm-url] [![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/3335/badge)](https://bestpractices.coreinfrastructure.org/projects/3335)
 
-![Alt text](./docs/mockingbird.png)
+![Alt text](./docs/mockingbird_logo.png)
 
 ----
 
@@ -322,5 +322,5 @@ and I will try and get back to you asap :)
 [NPM]: https://www.npmjs.com/
 [Serverless]: https://serverless.com/
 [LinkedIn]: https://www.linkedin.com/in/sasasavic/
-[npm-image]: https://img.shields.io/badge/npm-v0.1.4-blue
+[npm-image]: https://img.shields.io/badge/npm-v0.1.5-blue
 [npm-url]: https://www.npmjs.com/package/@imbueapp/mockingbird
