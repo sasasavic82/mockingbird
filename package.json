@@ -1,6 +1,6 @@
 {
   "name": "@imbueapp/mockingbird",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "API mocking framework for load and functional API testing",
   "main": "index.js",
   "bin": {
@@ -8,7 +8,7 @@
   },
   "scripts": {
     "postinstall": "npx tsc",
-    "dev": "tsc-watch --onSuccess \"node ./dist/server.js\"",
+    "dev": "tsc-watch --onSuccess \"node ./dist/lib/server.js\"",
     "start": "npm run print:project && npx pm2 start cluster.yml",
     "test": "jest",
     "print:project": "asciify ' mockingbird ' -f puffy"
