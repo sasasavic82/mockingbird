@@ -23,9 +23,9 @@ it using `serverless framework`.
 The current version supports adding new simulation layers. Future version will allow for
 extension of exhisting layers through extnesion of `classes` and `interfaces`.
 
-Mockingbird is completely stateless, making it extremely and elastically scalable. Being
-*programmable* means that with every request, you supply the kinds of simulations you'd
-like to run against the request.
+Mockingbird is completely stateless, making it highly scalable. You can run it in one container
+or a thousand 🤓 Being *programmable* means that with every request, you simply supply the kinds of simulations you'd
+like to run against the request and the probability of failure occurence (`0.0 - 1.0`)
 
 ----
 
@@ -41,7 +41,7 @@ There is a need for an open source fault simulation framework ... why not?
 
 * NodeJS v10
 
-## Usage
+## Get it up and running quickly
 
 Get it (global installation):
 ```
@@ -59,6 +59,8 @@ Mockingbird runs on default port `3333`, but you can set a environmental variabl
 export MOCKINGBIRD_SERVICE_PORT=5555
 ```
 
+## Running the Mockingbird service and hitting Postman requests
+![Alt text](./docs/mockingbird_demo.png)
 
 
 ## Mockingbird simulation layers
