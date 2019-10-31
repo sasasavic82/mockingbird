@@ -11,19 +11,19 @@ export const buildMiddleware = (
     }
 }
 
-type Handler = (
+export type SimulatorHandler = (
     req: Request,
     res: Response,
     next: NextFunction
 ) => Promise<void> | void;
 
-type Route = {
+export type SimulatorRoute = {
     path: string,
     method: string,
-    handler: Handler | Handler[]
+    handler: SimulatorHandler | SimulatorHandler[]
 };
 
-export const buildRoutes = (routes: Route[], router: Router) => {
+export const buildRoutes = (routes: SimulatorRoute[], router: Router) => {
     for(const route of routes) {
         const { method, path, handler } = route;
         (router as any)[method](path, handler);
