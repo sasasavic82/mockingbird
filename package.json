@@ -1,10 +1,10 @@
 {
   "name": "@imbueapp/mockingbird",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "API mocking framework for load and functional API testing",
   "main": "index.js",
   "bin": {
-    "alm": "./bin/mockingbird"
+    "mockingbird": "./bin/mockingbird"
   },
   "scripts": {
     "postinstall": "npx tsc",
