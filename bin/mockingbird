@@ -1,7 +1,8 @@
 #! /usr/bin/env node
 let { MockingServer } = require('../dist/lib/server');
-let { MockingEngine } = require('../dist/lib/engine/mocking/mockEngine');
-let simulators = require('../dist/lib/engine/mocking/simulators');
+let { MockingEngine } = require('../dist/lib/engine/mockEngine');
+
+let simulators = require('../dist/lib/engine/simulators');
 let engine = new MockingEngine();
 
 const { MOCKINGBIRD_SERVICE_PORT = 3333 } = process.env;
