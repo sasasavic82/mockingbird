@@ -1,6 +1,6 @@
 {
   "name": "@imbueapp/mockingbird",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "API mocking framework for load and functional API testing",
   "main": "index.js",
   "bin": {

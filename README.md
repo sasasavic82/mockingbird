@@ -357,5 +357,5 @@ For support, please please raise a support ticket :)
 [NPM]: https://www.npmjs.com/
 [Serverless]: https://serverless.com/
 [LinkedIn]: https://www.linkedin.com/in/sasasavic/
-[npm-image]: https://img.shields.io/badge/npm-v0.1.5-blue
+[npm-image]: https://img.shields.io/badge/npm-v0.1.6-blue
 [npm-url]: https://www.npmjs.com/package/@imbueapp/mockingbird
