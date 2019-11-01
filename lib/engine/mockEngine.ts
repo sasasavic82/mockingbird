@@ -62,9 +62,9 @@ export abstract class BaseSimulator<T> implements ISimulation {
 
         let context: SimulatorContext<T> = this.contextualize(incomingData.body, settings, req, res, next);
 
+
         if (context.settings == undefined)
             return next();
-
 
         this.log("evaluate", "processing " + chalk.blue(`${this.constructor.name} simulator`));
 
