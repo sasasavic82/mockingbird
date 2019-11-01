@@ -2,6 +2,7 @@ import { SimulationConfig, SimulatorContext } from "../common/types";
 import { BaseSimulator } from "../mockEngine"
 import { maybeWithDefault } from "../../utils/tools";
 import { KeyValue } from "../../utils/serviceTypes";
+import chalk from "chalk";
 
 export enum ConnectionFaultType {
     EmptyResponse = "empty_response",
@@ -43,13 +44,13 @@ export class HeaderSimulator extends BaseSimulator<HeaderData> {
 
     private injectRandom(context: SimulatorContext<HeaderData>): any {
         if (maybeWithDefault(context.settings.injectRandom)(false)) {
-            this.log("injectRandom", `injecting random headers`);
+            this.log("injectRandom", `injecting random headers ` + chalk.red("NOTE: layer has not yet been implemented"));
         }
     }
 
     private permutate(context: SimulatorContext<HeaderData>): any {
-        if (maybeWithDefault(context.settings.injectRandom)(false)) {
-            this.log("permutate", `permutating headers`);
+        if (maybeWithDefault(context.settings.permutate)(false)) {
+            this.log("permutate", `permutating headers` + + chalk.red("NOTE: layer has not yet been implemented"));
         }
     }
 
