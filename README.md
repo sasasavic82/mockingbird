@@ -334,19 +334,147 @@ IN-PROGRESS
 ## To start developing Mockingbird using the npm package
 
 Developing with Mockingbird is easy, All you need to do is inclide the package 
-in your `package.json` file.
-
-##### You have a working [Node environment].
-IN-PROGRESS
-```
+in your `package.json` file by running:
 
 ```
-
-##### You have a working [Docker environment].
-IN-PROGRESS
+npm install @imbueapp/mockingbird
 ```
 
+Let's build a quick Mocking Server with a DelaySimulator layer. In your `index.ts` file, define the following:
+
 ```
+import { MockingServer, MockingEngine, ServerConfig, DelaySimulator } from "@imbueapp/mockingbird";
+
+let engine = new MockingEngine();
+
+engine.loadSimulators([
+  new DelaySimulator({ namespace: "delay"})]
+);
+
+let serverConfig: ServerConfig = {
+    port: process.env.MOCKINGBIRD_SERVICE_PORT || 3333,
+    debug: true,
+    engine: engine    
+}
+
+let mockingServer = new MockingServer(serverConfig);
+
+mockingServer.startService();
+```
+
+Once you compile your project and run it, this is the output you should see:
+```
+# node index.js
+simulator[DelaySimulator:delay:initialize] loaded DelaySimulator simulator
+🕊️ mockingbird 🕊️ server is running http://localhost:3333...
+```
+
+Now, let's make a request using the following `data.json` payload:
+```
+{
+	"settings": {
+		"failureProbability": 0.2,
+		"delay": {
+			"type": "fixed",
+			"delay": 1000
+		}
+	},
+	"body": {
+		"name": "Joe Blogs"
+	}
+}
+```
+Run our curl command ...
+```
+curl -d "@data.json" -X POST http://localhost:3333/api/v1/mock
+```
+
+And the output we should get:
+```
+simulator[DelaySimulator:delay:ingest] entering DelaySimulator simulator
+simulator[DelaySimulator:delay:probability] probability of failure occured... simulating failure
+simulator[DelaySimulator:delay:evaluate] processing DelaySimulator simulator
+simulator[DelaySimulator:delay:FixedDelay] delaying for 5000ms
+```
+
+Your request should have been delayed by 5000ms (5 seconds). Mine did :) Running it multiple times should yield majority of your
+request to be returned immediately and about 20% of them to be delayed, as dictated by the `"failureProbability": 0.2` property.
+ 
+## Creating your own Simulation layer
+Let's create a new simulation layer. Let that layer be a "security" layer, where we inject a `hacked` message into our response.
+
+
+```
+import { MockingServer, MockingEngine, ServerConfig, BaseSimulator, SimulatorContext, SimulationConfig } from "@imbueapp/mockingbird";
+
+interface SecurityData {
+  message: string
+}
+
+export class SecuritySimulator extends BaseSimulator<SecurityData> {
+  constructor(config: SimulationConfig) {
+      super(config);
+      this.namespace = "security";
+  }
+
+  evaluate(context: SimulatorContext<SecurityData>): void {
+      let securityMessage: string = context.settings.message
+      context.res.status(200).send({
+        "hacked": securityMessage
+      });
+  }
+}
+
+let engine = new MockingEngine();
+
+engine.loadSimulators([
+  new SecuritySimulator({ namespace: "security"})]
+);
+
+let serverConfig: ServerConfig = {
+    port: process.env.MOCKINGBIRD_SERVICE_PORT || 3333,
+    debug: true,
+    engine: engine    
+}
+
+let mockingServer = new MockingServer(serverConfig);
+
+mockingServer.startService();
+```
+
+Initializing the service will yield:
+
+```
+🕊️ mockingbird 🕊️ server is running http://localhost:3333...
+simulator[SecuritySimulator:security:initialize] loaded SecuritySimulator simulator
+```
+And running the following payload against our running Mockingbird service will yield:
+
+![Alt text](./docs/hacked.png)
+
+Pretty cool eh? :)
+
+We should also see the following log output from the Mockingbird service Simulation engine:
+
+```
+simulator[SecuritySimulator:security:ingest] entering SecuritySimulator simulator
+simulator[SecuritySimulator:security:probability] probability of failure occured... simulating failure
+simulator[SecuritySimulator:security:evaluate] processing SecuritySimulator simulator
+```
+
+##### Running in docker.
+Provided you have docker on your local machine :), run the following from the root directory of the project
+```
+docker build -t test/mockingbird .
+docker run -it -p 3333:3333 test/mockingbird
+```
+What you will notice is the container will run mockingbird in cluster mode. This is defined in the `cluster.yml` We achieve clustering
+via a very powerful package called `pm2-runtime` that solves major issues when running Node.js applications inside containers. To name a few:
+
+* Second Process Fallback for High Application Reliability
+* Process Flow Control
+* Automatic Application Monitoring to keep it always sane and high performing
+* Automatic Source Map Discovery and Resolving Support
 
 
 ## Support

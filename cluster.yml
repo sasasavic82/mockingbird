@@ -1,4 +1,4 @@
 apps:
-  - script: ./dist/server.js
+  - script: ./bin/mockingbird
     instances: max
     exec_mode: cluster

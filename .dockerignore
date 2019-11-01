@@ -1,0 +1,7 @@
+dist
+docs
+node_modules
+test
+*.md 
+LICENSE
+*-lock.json
