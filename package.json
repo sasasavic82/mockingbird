@@ -2,21 +2,23 @@
   "name": "@imbueapp/mockingbird",
   "version": "0.1.7",
   "description": "API mocking framework for load and functional API testing",
-  "main": "index.js",
   "bin": {
     "mockingbird": "./bin/mockingbird"
   },
   "scripts": {
     "postinstall": "npx tsc",
+    "prepublishOnly": "npx tsc",
     "dev": "tsc-watch --onSuccess \"node ./bin/mockingbird\"",
     "start": "npm run print:project && npx pm2 start cluster.yml",
-    "test": "jest",
+    "test": "NODE_ENV=test LOG_LEVEL=off jest test/*.test.js --detectOpenHandles",
     "print:project": "asciify ' mockingbird ' -f puffy"
   },
   "repository": {
     "type": "git",
     "url": "ssh://git@github.com:sasasavic82/mockingbird.git"
   },
+  "types": "dist/index.d.ts",
+  "main": "dist/index.js",
   "dependencies": {
     "@types/chalk": "^2.2.0",
     "@types/compression": "^1.0.1",

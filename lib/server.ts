@@ -18,8 +18,8 @@ process.on("unhandledRejection", e => {
 });
 
 export interface ServerConfig {
-    port: number,
-    debug: boolean,
+    port: number | string,
+    debug?: boolean,
     engine: MockingEngine
 }
 
