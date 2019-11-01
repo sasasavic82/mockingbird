@@ -14,6 +14,14 @@ const logger = console.log;
 
 const NEW_LINE = "\n";
 
+/**
+ * Abstract BaseSimulator class
+ * 
+ * This is where all the magic happens before we propagate the requests down to the simulation layers.
+ * Every request will come through this class first, before the calls propagate to the instantiating class
+ * via the `abstract evaluate` function.
+ * 
+ */
 export abstract class BaseSimulator<T> implements ISimulation {
 
     public namespace: string;
@@ -23,11 +31,22 @@ export abstract class BaseSimulator<T> implements ISimulation {
         this.config = config;
         this.namespace = config.namespace;
 
-        // set the defaults
+        /**
+         * Set the defaults
+         */
         this.config.debug = maybeWithDefault(this.config.debug)(true)
         this.log("initialize", `loaded ${this.constructor.name} simulator`);
     }
 
+    /**
+     * ingest implementation
+     * 
+     * TODO: This will need to be cleaned up a little.
+     * 
+     * @param req SimulatorRequest handler which holds the client request context
+     * @param res SimulatorResponse handler which holds the client response context
+     * @param next NextSimulator callback which we need to call if we want to progress to the next layer, unless the simulator ends the request prematurely
+     */
     ingest(req: SimulatorRequest, res: SimulatorResponse, next: NextSimulator): any {
 
         this.log("ingest", "entering " + chalk.blue(`${this.constructor.name} simulator`));
@@ -35,6 +54,9 @@ export abstract class BaseSimulator<T> implements ISimulation {
         let incomingData: IncomingData = res.locals as IncomingData;
         let settings: ExtendableSettings<T> = this.castSettings(incomingData.settings);
 
+        /**
+         * Shall we fail or not? Let's roll the dice :)
+         */
         if (this.generateFailure(settings.failureProbability).passed)
             return next();
 
@@ -46,7 +68,9 @@ export abstract class BaseSimulator<T> implements ISimulation {
 
         this.log("evaluate", "processing " + chalk.blue(`${this.constructor.name} simulator`));
 
-        // Call children
+        /**
+         * Call children
+         */
         this.evaluate(context, (context) => next());
     }
 
@@ -55,9 +79,23 @@ export abstract class BaseSimulator<T> implements ISimulation {
         return settings;
     }
 
+    /**
+     * We call this function to create our simulator context with all of the necessary properties
+     * which enable us visibility into the request data, settings and request/resoonse handlers.
+     * 
+     * @param body the request body
+     * @param globalSettings global settings from the main request body
+     * @param req SimulatorRequest
+     * @param res SimulatorResponse
+     * @param next NextSimulator
+     */
     private contextualize(body: any, globalSettings: ExtendableSettings<T>, req: SimulatorRequest, res: SimulatorResponse, next: NextSimulator): SimulatorContext<T> {
 
         let settings: ExtendableSettings<T> = globalSettings;
+
+        /**
+         * We extract the settings property associated with the simulation layer
+         */
         let context: T = settings[this.config.namespace] as T;
 
         return {
@@ -69,6 +107,13 @@ export abstract class BaseSimulator<T> implements ISimulation {
         };
     }
 
+    /**
+     * Function that generates the occurence of a failure based on `probabilityOfFailure.
+     * 
+     * Example: Probability of 0.2 indicates 20% chance of failure
+     * 
+     * @param probabilityOfFailure failure probability value between 0.0 - no failure to 1.0 - certain failure.
+     */
     private generateFailure(probabilityOfFailure: number | undefined): ProbabilityResponse {
 
         if (probabilityOfFailure == undefined)
@@ -86,6 +131,13 @@ export abstract class BaseSimulator<T> implements ISimulation {
         }
     }
 
+    /**
+     * Pretty logging
+     * 
+     * @param section what section are you currently in
+     * @param message the message
+     * @param newLine whether we want to have a line separator between stdout outputs
+     */
     protected log(section: string, message: string, newLine?: boolean) {
 
         if(newLine)
@@ -95,10 +147,20 @@ export abstract class BaseSimulator<T> implements ISimulation {
             logger(chalk.red(`simulator[`) + chalk.white(`${this.constructor.name}:${this.namespace}:${section}`) + chalk.red(`] `) + chalk.yellow(`${message}`));
     }
 
+    /**
+     * Every simulation layer must implement the `evaluate` method. Here, we use "chain of responsibility" pattern
+     * where the parent (base class) calls the child to run (evaluate) the failure simulation
+     * 
+     * @param context simulation context associated with the request
+     * @param callback optional callback function to the abstract base class
+     */
     protected abstract evaluate(context: SimulatorContext<T>, callback?: SimulatorContextCallback<T>): void;
 
 }
 
+/**
+ * Place where we load/unload simulators. It is also the primary entry-point for all requests.
+ */
 export class MockingEngine implements ISimulation {
 
     public namespace: string = "mockingengine";
@@ -213,11 +275,20 @@ export class MockingEngine implements ISimulation {
                 res.status(200).send(incomingData.body);
             };
 
+        /**
+         * default `final-handler` definition
+         */
         let defaultEndSimulator: ISimulation = {
             namespace: "final-handler",
             ingest: defaultEndSimulatorHandler,
         };
 
+        /**
+         * Here we load two default simulation middleware layers.
+         * `this` layer is MockingEngine layer, responsible for taking the first request.
+         * `defaultEndSimulator`, if ever reached, completes the request - returning a 200 and the body of the
+         * initial response.
+         */
         return [this, defaultEndSimulator];
     }
 
