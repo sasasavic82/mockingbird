@@ -442,6 +442,33 @@ let mockingServer = new MockingServer(serverConfig);
 mockingServer.startService();
 ```
 
+### What did we do here?
+
+1. We have defined an interface `SecurityData` that describes the configuration data associated with this new layer.
+2. We create a new class `SecuritySimulator` and extend it with `BaseSimulator<SecurityData>`, passing in the type variable `SecurityData`. Internally, this will give our data representational visibility
+3. The `BaseSimulator` is an abstract class, and it forces us to implement the  `evaluate(context: SimulatorContext<SecurityData>): void` method. This method will be called by
+the parent class, `BaseSimulator` when running/evaluating the simulation.
+4. Inside the `evaluate` method, we simply retrieve the `message` property (the one we defined in our `SecurityData` interface).
+5. We finally respond back to our client with a `200 OK`, but augmenting the original payload to our message.
+6. Once we initialize the `MockingEngine` and pass on an instance of our `SecuritySimulator` (making sure we provide the `namespace: "security"`).
+
+NOTE: `namespace` provides scope resolution when we are parsing the request payload. Notice in our payload in the image below we have the following in the `settings` section:
+
+```
+	"settings": {
+		"failureProbability": 0.4,
+		"security": {
+			"message": "You have been hacked!!!!!!"
+		}
+	}
+```
+
+The security property reflects the `namespace`.
+
+Next version of Mockingbird will allow for extending of the namespaces.
+
+### Let's run our new Simulation layer
+
 Initializing the service will yield:
 
 ```
@@ -485,5 +512,5 @@ For support, please please raise a support ticket :)
 [NPM]: https://www.npmjs.com/
 [Serverless]: https://serverless.com/
 [LinkedIn]: https://www.linkedin.com/in/sasasavic/
-[npm-image]: https://img.shields.io/badge/npm-v0.1.7-blue
+[npm-image]: https://img.shields.io/badge/npm-v1.0.1-blue
 [npm-url]: https://www.npmjs.com/package/@imbueapp/mockingbird
