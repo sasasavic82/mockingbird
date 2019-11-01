@@ -1,7 +1,7 @@
-import { SimulationConfig, SimulatorContext } from "../types";
+import { SimulationConfig, SimulatorContext } from "../common/types";
 import { BaseSimulator } from "../mockEngine"
-import { maybeWithDefault } from "../../../utils/tools";
-import { KeyValue } from "../../../utils/serviceTypes";
+import { maybeWithDefault } from "../../utils/tools";
+import { KeyValue } from "../../utils/serviceTypes";
 
 export enum ConnectionFaultType {
     EmptyResponse = "empty_response",
@@ -25,8 +25,6 @@ export class HeaderSimulator extends BaseSimulator<HeaderData> {
     }
 
     evaluate(context: SimulatorContext<HeaderData>): void {
-
-        this.log("evaluate", `Processing in ${this.constructor.name}`);
 
         this.extraHeaders(context);
         this.injectRandom(context);

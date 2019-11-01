@@ -8,7 +8,7 @@
   },
   "scripts": {
     "postinstall": "npx tsc",
-    "dev": "tsc-watch --onSuccess \"node ./dist/lib/server.js\"",
+    "dev": "tsc-watch --onSuccess \"node ./bin/mockingbird\"",
     "start": "npm run print:project && npx pm2 start cluster.yml",
     "test": "jest",
     "print:project": "asciify ' mockingbird ' -f puffy"

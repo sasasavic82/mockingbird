@@ -1,6 +1,6 @@
-import {} from "../types"
+import {} from "../common/types"
 import { BaseSimulator } from "../mockEngine"
-import { SimulationConfig, SimulatorContext, ResponseStatus } from "../types"
+import { SimulationConfig, SimulatorContext, ResponseStatus } from "../common/types"
 
 export enum ConnectionFaultType {
     EmptyResponse = "empty_response",
@@ -19,8 +19,6 @@ export class ConnectionSimulator extends BaseSimulator<ConnectionFaultData> {
 
     evaluate(context: SimulatorContext<ConnectionFaultData>): void {
 
-        this.log("evaluate", `Processing in ${this.constructor.name}`);
-
         if((context.settings as unknown) == ConnectionFaultType.ConnectioResetByPeer) {
             return this.connectionResetByPeer(context)
         }
@@ -33,12 +31,12 @@ export class ConnectionSimulator extends BaseSimulator<ConnectionFaultData> {
     }
 
     private connectionResetByPeer(context: SimulatorContext<ConnectionFaultData>): any {
-        this.log("connectionResetByPeer", `Abruptly resetting connection`)
+        this.log("connectionResetByPeer", `abruptly resetting connection`)
         return context.res.end();
     }
 
     private emptyResponse(context: SimulatorContext<ConnectionFaultData>): any {
-        this.log("emptyResponse", `Emptying the response`);
+        this.log("emptyResponse", `emptying the response`);
         return context.res.status(ResponseStatus.OK).send();
     }
 

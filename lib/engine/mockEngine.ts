@@ -1,15 +1,18 @@
 
 import { Request, Response, NextFunction } from "express";
-import { IncomingData, ExtendableSettings, ISimulation, SimulatorResponse, 
-    SimulatorRequest, NextSimulator, SimulationConfig, SimulatorContext, 
-    SimulatorContextCallback, ProbabilityResponse, IDisposable, SimulationHandler, ResponseStatus } from "./types";
-import { SimulatorExistsError } from "./errors";
-import { maybeWithDefault } from "../../utils/tools";
+import {
+    IncomingData, ExtendableSettings, ISimulation, SimulatorResponse,
+    SimulatorRequest, NextSimulator, SimulationConfig, SimulatorContext,
+    SimulatorContextCallback, ProbabilityResponse, IDisposable, SimulationHandler, ResponseStatus
+} from "./common/types";
+import { SimulatorExistsError } from "./common/errors";
+import { maybeWithDefault } from "../utils/tools";
 import chalk from "chalk";
 
 // Monkeypatch console.log
 const logger = console.log;
 
+const NEW_LINE = "\n";
 
 export abstract class BaseSimulator<T> implements ISimulation {
 
@@ -22,29 +25,32 @@ export abstract class BaseSimulator<T> implements ISimulation {
 
         // set the defaults
         this.config.debug = maybeWithDefault(this.config.debug)(true)
-        this.log("initialize", `Loaded ${this.constructor.name} simulator`);
+        this.log("initialize", `loaded ${this.constructor.name} simulator`);
     }
 
     ingest(req: SimulatorRequest, res: SimulatorResponse, next: NextSimulator): any {
 
-        this.log("ingest", `Processing in ${this.constructor.name}`);
+        this.log("ingest", "entering " + chalk.blue(`${this.constructor.name} simulator`));
 
         let incomingData: IncomingData = res.locals as IncomingData;
         let settings: ExtendableSettings<T> = this.castSettings(incomingData.settings);
 
-        if(this.passed(settings.failureProbability).passed)
+        if (this.generateFailure(settings.failureProbability).passed)
             return next();
 
         let context: SimulatorContext<T> = this.contextualize(incomingData.body, settings, req, res, next);
 
-        if(context.settings == undefined)
+        if (context.settings == undefined)
             return next();
 
+
+        this.log("evaluate", "processing " + chalk.blue(`${this.constructor.name} simulator`));
+
         // Call children
-        this.evaluate(context, (context) =>  next());
+        this.evaluate(context, (context) => next());
     }
 
-    private castSettings(globalSettings: any) : ExtendableSettings<T>  {
+    private castSettings(globalSettings: any): ExtendableSettings<T> {
         let settings: ExtendableSettings<T> = (globalSettings as ExtendableSettings<T>);
         return settings;
     }
@@ -53,7 +59,7 @@ export abstract class BaseSimulator<T> implements ISimulation {
 
         let settings: ExtendableSettings<T> = globalSettings;
         let context: T = settings[this.config.namespace] as T;
-        
+
         return {
             body: body,
             settings: context,
@@ -63,24 +69,29 @@ export abstract class BaseSimulator<T> implements ISimulation {
         };
     }
 
-    private passed(probabilityOfFailure: number | undefined): ProbabilityResponse {
+    private generateFailure(probabilityOfFailure: number | undefined): ProbabilityResponse {
 
-        if(probabilityOfFailure == undefined)
+        if (probabilityOfFailure == undefined)
             probabilityOfFailure = 0;
-        
+
         let random: number = Math.random();
         let hasPassed: boolean = random >= probabilityOfFailure
-    
-        this.log("probability", chalk.yellow(`${probabilityOfFailure}`) + `, ${hasPassed ? chalk.green.bold("passed") : chalk.red.bold("failed")}`)
-    
+
+        if (!hasPassed)
+            this.log("probability", chalk.green("probability of failure occured... simulating failure"));
+
         return {
             random: random,
             passed: hasPassed
         }
     }
 
-    protected log(section: string, message: string) {
-        if(this.config.debug)
+    protected log(section: string, message: string, newLine?: boolean) {
+
+        if(newLine)
+            logger(NEW_LINE);
+
+        if (this.config.debug)
             logger(chalk.red(`simulator[`) + chalk.white(`${this.constructor.name}:${this.namespace}:${section}`) + chalk.red(`] `) + chalk.yellow(`${message}`));
     }
 
@@ -99,7 +110,7 @@ export class MockingEngine implements ISimulation {
 
     public loadSimulators(simulators: ISimulation | ISimulation[]): IDisposable[] {
 
-        if(!Array.isArray(simulators))
+        if (!Array.isArray(simulators))
             return [this.internalLoad(simulators as ISimulation)];
 
         return (simulators as ISimulation[]).map((simulator) => this.internalLoad(simulator));
@@ -113,7 +124,7 @@ export class MockingEngine implements ISimulation {
         * such that we can merge two simulator namespaces.
         */
         this.simulatorLayers.forEach((layer) => {
-            if(layer.namespace === simulator.namespace)
+            if (layer.namespace === simulator.namespace)
                 throw new SimulatorExistsError(`Simulator ${simulator.namespace} already exists in the namespace.`);
         });
 
@@ -126,7 +137,7 @@ export class MockingEngine implements ISimulation {
         let lastSimulator = this.simulatorLayers.pop();
         this.simulatorLayers.push(simulator);
 
-        if(lastSimulator)
+        if (lastSimulator)
             this.simulatorLayers.push(lastSimulator);
 
         /** 
@@ -196,11 +207,11 @@ export class MockingEngine implements ISimulation {
          * @param req SimulatorRequest Request context
          * @param res SimulatorResponse Response context
          */
-        let defaultEndSimulatorHandler: SimulationHandler = 
+        let defaultEndSimulatorHandler: SimulationHandler =
             (req: SimulatorRequest, res: SimulatorResponse): any => {
                 let incomingData = res.locals as any as IncomingData;
                 res.status(200).send(incomingData.body);
-        };
+            };
 
         let defaultEndSimulator: ISimulation = {
             namespace: "final-handler",

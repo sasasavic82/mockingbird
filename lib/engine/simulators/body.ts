@@ -1,7 +1,7 @@
 
 import { BaseSimulator } from "../mockEngine"
-import { SimulationConfig, SimulatorContext } from "../types"
-import { maybeWithDefault, randomBetween, removeRandomArray, removeRandomProperty } from "../../../utils/tools";
+import { SimulationConfig, SimulatorContext } from "../common/types"
+import { maybeWithDefault, randomBetween, removeRandomArray, removeRandomProperty } from "../../utils/tools";
 import chalk from "chalk";
 
 export const mimeTypes = [
@@ -40,14 +40,9 @@ export class BodySimulator extends BaseSimulator<BodyData> {
 
     evaluate(context: SimulatorContext<BodyData>): void {
 
-        this.log("evaluate", `Processing in ${this.constructor.name}`);
-
         this.randomContentType(context);
-        
         let body = this.randomRemove(context);
-
         context.res.locals.body = body;
-
         context.next();
     }
 

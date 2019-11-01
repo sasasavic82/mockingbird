@@ -1,7 +1,4 @@
-import { KeyValue } from "../../utils/serviceTypes";
 import { Request, Response, NextFunction } from "express";
-
-//export type MockingResult = "success" | "failure";
 
 export enum MockingResult {
     Success = "success",

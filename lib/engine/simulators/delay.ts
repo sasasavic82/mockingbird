@@ -1,6 +1,6 @@
-import {} from "../types"
+import {} from "../common/types"
 import { BaseSimulator } from "../mockEngine"
-import { SimulationConfig, SimulatorContext } from "../types"
+import { SimulationConfig, SimulatorContext } from "../common/types"
 
 export enum DelayType {
     Lognormal = "lognormal",
@@ -44,8 +44,6 @@ export class DelaySimulator extends BaseSimulator<DelayData> {
 
     evaluate(context: SimulatorContext<DelayData>): void {
 
-        this.log("evaluate", `Processing in ${this.constructor.name}`);
-
         if((context.settings as any).type == DelayType.Fixed) {
             return this.fixedDelay(context, 
                 ((context.settings as any).delay));
@@ -55,7 +53,7 @@ export class DelaySimulator extends BaseSimulator<DelayData> {
     }
 
     private fixedDelay(context: SimulatorContext<DelayData>, delayValue: number): any {
-        this.log("FixedDelay", `Delaying for ${delayValue}ms`)
+        this.log("FixedDelay", `delaying for ${delayValue}ms`)
         return setTimeout(context.next, delayValue);
     }
 }

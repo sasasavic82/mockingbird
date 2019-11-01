@@ -2,10 +2,10 @@
 import http from "http";
 import express from "express";
 
-import { buildMiddleware, buildRoutes } from "./utils";
+import { buildMiddleware, buildRoutes, SimulatorRoute } from "./utils";
 import middleware from "./middleware";
 import errorHandlers from "./middleware/errorHandlers";
-import routes from "./engine";
+import { MockingEngine } from "./engine/mockEngine";
 
 process.on("uncaughtException", e => {
     console.log(e);
@@ -17,15 +17,47 @@ process.on("unhandledRejection", e => {
     process.exit(1);
 });
 
-const router = express();
+export interface ServerConfig {
+    port: number,
+    debug: boolean,
+    engine: MockingEngine
+}
 
-buildMiddleware(middleware, router);
-buildRoutes(routes, router);
-buildMiddleware(errorHandlers, router);
+export class MockingServer {
 
-const { MOCKINGBIRD_SERVICE_PORT = 3333 } = process.env;
-const server = http.createServer(router);
+    private router: any;
+    private server: http.Server;
 
-server.listen(MOCKINGBIRD_SERVICE_PORT, () => {
-    console.log(`🕊️ mockingbird 🕊️ server is running http://localhost:${MOCKINGBIRD_SERVICE_PORT}...`); 
-});
+    constructor(private config: ServerConfig) {
+        this.router = express();
+        this.initialiseMiddlewareAndRoutes();
+        this.server = http.createServer(this.router);
+    }
+
+    private initialiseMiddlewareAndRoutes(): void {
+        buildMiddleware(middleware, this.router);
+        buildRoutes(this.initialiseMockingRoute(), this.router);
+        buildMiddleware(errorHandlers, this.router);
+    }
+
+    private initialiseMockingRoute(): SimulatorRoute[] {
+        return [
+            {
+                path: "/api/v1/mock",
+                method: "post",
+                handler: [...this.mockingEngineInstance().getSimulatorHandlers()]
+            }
+        ]
+    }
+
+    mockingEngineInstance(): MockingEngine {
+        return this.config.engine;
+    }
+
+    startService() {
+        
+        this.server.listen(this.config.port, () => {
+            console.log(`🕊️ mockingbird 🕊️ server is running http://localhost:${this.config.port}...`);
+        });
+    }
+}
