@@ -1,2 +1,24 @@
 #! /usr/bin/env node
-require('../dist/lib/server');
+let { MockingServer } = require('../dist/lib/server');
+let { MockingEngine } = require('../dist/lib/engine/mocking/mockEngine');
+let simulators = require('../dist/lib/engine/mocking/simulators');
+let engine = new MockingEngine();
+
+const { MOCKINGBIRD_SERVICE_PORT = 3333 } = process.env;
+
+engine.loadSimulators([
+  new simulators.DelaySimulator({ namespace: "delay"}),
+  new simulators.ConnectionSimulator({ namespace: "connection" }),
+  new simulators.HeaderSimulator({ namespace: "header" }),
+  new simulators.BodySimulator({ namespace: "body" })]
+);
+
+let serverConfig = {
+    port: MOCKINGBIRD_SERVICE_PORT,
+    debug: true,
+    engine: engine    
+}
+
+let mockingServer = new MockingServer(serverConfig);
+
+mockingServer.startService();
