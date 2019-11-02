@@ -512,5 +512,5 @@ For support, please please raise a support ticket :)
 [NPM]: https://www.npmjs.com/
 [Serverless]: https://serverless.com/
 [LinkedIn]: https://www.linkedin.com/in/sasasavic/
-[npm-image]: https://img.shields.io/badge/npm-v1.0.1-blue
+[npm-image]: https://img.shields.io/badge/npm-v1.1.0-blue
 [npm-url]: https://www.npmjs.com/package/@imbueapp/mockingbird

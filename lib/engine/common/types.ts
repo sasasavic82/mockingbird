@@ -5,9 +5,42 @@ export enum MockingResult {
     Failure = "failure"
 }
 
+export interface ProxySettings {
+    url: string
+}
+
+export interface StoreSettings {
+    storeKey: string,
+    query: string
+}
+
+export enum SourceTypes {
+    Proxy = "proxy",
+    Store = "store",
+    Body = "body"
+}
+
+export interface SourceDescription {
+    type: SourceTypes | string,
+    settings?: ProxySettings | StoreSettings
+}
+
 export interface ExtendableSettings<T> {
     failureProbability: number,
-    [key: string]: T | any;
+    source?: SourceDescription,
+    //executionOrder: Array | String,
+    simulators?: SimulatorIndex<T>
+}
+
+export interface DataIndex<T> {
+    [key: string]: T | T[]
+}
+
+/**
+ * Describes the simulator collection
+ */
+export interface SimulatorIndex<T> {
+    [key: string]: T | any
 }
 
 export type IncomingData = {
@@ -26,7 +59,10 @@ export type IncomingData = {
  */
 export enum ResponseStatus {
     OK = 200,
-    CREATED = 201
+    CREATED = 201,
+    ACCEPTED = 202,
+    BAD_REQUEST = 400,
+    NOT_FOUND = 404
 }
 
 
@@ -35,7 +71,9 @@ export interface SimulationConfig {
     debug?: true
 }
 
-// ------- awesome code ------
+export type SelectorHandler<T> = {
+    (): T
+}
 
 /**
  * @type SimulationHandler
@@ -93,9 +131,12 @@ export type ProbabilityResponse = {
     passed: boolean
 }
 
-export type NextSimulator = NextFunction;
-export type SimulatorRequest = Request;
-export type SimulatorResponse = Response;
+//export type NextSimulator = NextFunction;
+export interface NextSimulator extends NextFunction {}
+//export type SimulatorRequest = Request;
+export interface SimulatorRequest extends Request {}
+//export type SimulatorResponse = Response;
+export interface SimulatorResponse extends Response {}
 
 export interface SimulatorContextCallback<T> {
     (context?: SimulatorContext<T>): void
