@@ -1,11 +1,12 @@
 import { Request, Response, NextFunction } from "express";
 import {
     IncomingData, ExtendableSettings, ISimulation, SimulatorResponse,
-    SimulatorRequest, NextSimulator,IDisposable, SimulationHandler, 
-    ResponseStatus
+    SimulatorRequest, NextSimulator, IDisposable, SimulationHandler,
+    ResponseStatus, EngineConfig
 } from "./common/types";
 import { SourceLayer } from "./extesions/source";
 import { SimulatorExistsError } from "./common/errors";
+import { thisExpression } from "@babel/types";
 
 /**
  * Place where we load/unload simulators. It is also the primary entry-point for all requests.
@@ -15,7 +16,7 @@ export class MockingEngine implements ISimulation {
     public namespace: string = "mockingengine";
     protected simulatorLayers: ISimulation[] = [];
 
-    constructor() {
+    constructor(private config?: EngineConfig) {
         this.simulatorLayers = this.internalLoadSimulators();
     }
 
@@ -25,6 +26,10 @@ export class MockingEngine implements ISimulation {
             return [this.internalLoad(simulators as ISimulation)];
 
         return (simulators as ISimulation[]).map((simulator) => this.internalLoad(simulator));
+    }
+
+    public getSourceLayer(): SourceLayer | undefined {
+        return this.config ? this.config.sourceLayer : undefined;
     }
 
     private internalLoad(simulator: ISimulation): IDisposable {
@@ -118,22 +123,10 @@ export class MockingEngine implements ISimulation {
      */
     private internalLoadSimulators(): ISimulation[] {
 
-        let sourceInstance: SourceLayer = new SourceLayer({
-            "sash": {
-                "name": "Sash"
-            }
-        });
+        let simulations: ISimulation[] = [];
 
-        let sourceHandler: SimulationHandler =
-            (req: SimulatorRequest, res: SimulatorResponse, next: NextSimulator): any => sourceInstance.ingest(req, res, next);
-                   
-        /**
-         * default `final-handler` definition
-         */
-        let source: ISimulation = {
-            namespace: "source-layer",
-            ingest: sourceHandler,
-        };
+        simulations.push(this);
+        this.loadStoreLayer(simulations);
 
         /**
          * We are injecting a `final-handler`, as we need to make sure
@@ -158,16 +151,35 @@ export class MockingEngine implements ISimulation {
             ingest: defaultEndSimulatorHandler,
         };
 
+        simulations.push(defaultEndSimulator);
+
         /**
          * Here we load two default simulation middleware layers.
          * `this` layer is MockingEngine layer, responsible for taking the first request.
          * `defaultEndSimulator`, if ever reached, completes the request - returning a 200 and the body of the
          * initial response.
          */
-        return [
-            this,
-            source,
-            defaultEndSimulator];
+        return simulations;
+    }
+
+    private loadStoreLayer(simulations: ISimulation[]): void {
+
+        if (this.config && this.config.sourceLayer) {
+
+            let sourceHandler: SimulationHandler =
+                (req: SimulatorRequest, res: SimulatorResponse, next: NextSimulator): any =>
+                    ((this.config as EngineConfig).sourceLayer as SourceLayer).ingest(req, res, next);
+
+            /**
+            * default `final-handler` definition
+            */
+            let source: ISimulation = {
+                namespace: "source-layer",
+                ingest: sourceHandler,
+            };
+
+            simulations.push(source);
+        }
     }
 
 }

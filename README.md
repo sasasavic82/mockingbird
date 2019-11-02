@@ -53,7 +53,9 @@ the probability of the fault occurence.
 	"body": ..., 
 	"settings": {
 		"failureProbability": 0.2,
-		"connection": "connection_reset_by_peer"
+		"simulators": {
+			"connection": "connection_reset_by_peer"
+		}
 	}
 }
 ```
@@ -96,6 +98,29 @@ export MOCKINGBIRD_SERVICE_PORT=5555
 ## Running the Mockingbird service and hitting Postman requests
 ![Alt text](./docs/mockingbird_demo.png)
 
+## Mockingbird store layers
+Mockingbird allows you to specify a `source layer` that enables loading simulation data from locations other than the `body` property.
+Supported source types currently are `body` and `store`, which is a locally loaded `JSON` payload. In the coming release, we will support proxying `http` calls to other services.
+
+```
+	"settings": {
+		"failureProbability": 0.2,
+		"source": {
+			"type": "store",
+			"settings": {
+				"storeKey": "people",
+				"query": "id=1"
+			}
+		},
+		"simulators": {
+			"delay": {
+				"type": "fixed",
+				"delay": 1000
+			}
+		}
+	},
+	body: ...
+```
 
 ## Mockingbird simulation layers
 Mockingbird comes with a number of simulation middleware layers. As HTTP requests are
@@ -113,9 +138,11 @@ A variety of simulations that attempt to permutate the original body, such that 
 {
 	"settings": {
 		"failureProbability": 0.2,
-		"body": {
-			"randomContentType": true,
-			"randomRemove": true
+		"simulators": {
+			"body": {
+				"randomContentType": true,
+				"randomRemove": true
+			}
 		}
 	},
 	"body": {
@@ -148,14 +175,16 @@ you would not traditionally convey in the HTTP body.
 {
 	"settings": {
 		"failureProbability": 0.2,
-		"headers": {
-			"injectRandom": true,
-			"permutate": true,
-			"extraHeaders": [{
-				"key": "sash_key",
-				"value": "sash_value"
-			}]
-        }
+		"simulators": {
+			"headers": {
+				"injectRandom": true,
+				"permutate": true,
+				"extraHeaders": [{
+					"key": "sash_key",
+					"value": "sash_value"
+				}]
+			}
+		}
 	},
 	"body": {
 		"name": "Sasa",
@@ -193,9 +222,11 @@ Example below, delaying for `1000ms` (1 second)
 {
 	"settings": {
 		"failureProbability": 0.2,
-		"delay": {
-			"type": "fixed",
-			"delay": 1000
+		"simulators": {
+			"delay": {
+				"type": "fixed",
+				"delay": 1000
+			}
 		}
 	},
 	"body": {
@@ -219,10 +250,12 @@ For instance, to simulate a stable latency of 20ms +/- 5ms, use lower = 15 and u
 {
 	"settings": {
 		"failureProbability": 0.2,
-		"delay": {
-			"type": "uniform",
-			"lower": 15,
-            "upper": 25
+		"simulators": {
+			"delay": {
+				"type": "uniform",
+				"lower": 15,
+				"upper": 25
+			}
 		}
 	},
 	"body": {
@@ -246,10 +279,12 @@ sigma - Standard deviation. The larger the value, the longer the tail.
 {
 	"settings": {
 		"failureProbability": 0.2,
-		"delay": {
-			"type": "lognormal",
-			"median": 95,
-            "sigma": 0.1
+		"simulators": {
+			"delay": {
+				"type": "lognormal",
+				"median": 95,
+				"sigma": 0.1
+			}
 		}
 	},
 	"body": {
@@ -274,10 +309,12 @@ totalDuration - the total duration you want the response to take in milliseconds
 {
 	"settings": {
 		"failureProbability": 0.2,
-		"delay": {
-			"type": "lognormal",
-			"numberOfChunks": 50,
-            "totalDuration": 3000
+		"simulators": {
+			"delay": {
+				"type": "lognormal",
+				"numberOfChunks": 50,
+				"totalDuration": 3000
+			}
 		}
 	},
 	"body": {
@@ -298,7 +335,9 @@ Abruptly end an existing connection, not returning a status or a payload.
 {
 	"settings": {
 		"failureProbability": 0.2,
-        "connection": "connection_reset_by_peer"
+		"simulators": {
+        	"connection": "connection_reset_by_peer"
+		}
 	},
 	"body": {
 		"name": "Sasa",
@@ -315,7 +354,9 @@ Abruptly end the connection with a 200 OK HTTP response, but don't provide a bod
 {
 	"settings": {
 		"failureProbability": 0.2,
-        "connection": "empty_response"
+		"simulators": {
+        	"connection": "empty_response"
+		}
 	},
 	"body": {
 		"name": "Sasa",
@@ -374,9 +415,11 @@ Now, let's make a request using the following `data.json` payload:
 {
 	"settings": {
 		"failureProbability": 0.2,
-		"delay": {
-			"type": "fixed",
-			"delay": 1000
+		"simulators": {
+			"delay": {
+				"type": "fixed",
+				"delay": 1000
+			}
 		}
 	},
 	"body": {
@@ -512,5 +555,5 @@ For support, please please raise a support ticket :)
 [NPM]: https://www.npmjs.com/
 [Serverless]: https://serverless.com/
 [LinkedIn]: https://www.linkedin.com/in/sasasavic/
-[npm-image]: https://img.shields.io/badge/npm-v1.1.0-blue
+[npm-image]: https://img.shields.io/badge/npm-v1.1.1-blue
 [npm-url]: https://www.npmjs.com/package/@imbueapp/mockingbird
