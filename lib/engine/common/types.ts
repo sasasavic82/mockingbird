@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from "express";
+import { SourceLayer } from "../extesions/source";
 
 export enum MockingResult {
     Success = "success",
@@ -65,6 +66,9 @@ export enum ResponseStatus {
     NOT_FOUND = 404
 }
 
+export interface EngineConfig {
+    sourceLayer?: SourceLayer;
+}
 
 export interface SimulationConfig {
     namespace: string,

@@ -1,0 +1,44 @@
+{
+    "people": [
+        {
+            "id": 1,
+            "name": "Joe",
+            "surame": "Bloggs",
+            "age": 35,
+            "address": {
+                "street": "666 Evil Street",
+                "city": "Sydney"
+            }
+        },
+        {
+            "id": 2,
+            "name": "Marry",
+            "surame": "Jones",
+            "age": 29,
+            "address": {
+                "street": "172 Cool Street",
+                "city": "Brisbae"
+            }
+        },
+        {
+            "id": 3,
+            "name": "Sasa",
+            "surame": "Savic",
+            "age": 36,
+            "address": {
+                "street": "300 Awesome Street",
+                "city": "Melbourne"
+            }
+        }
+    ],
+    "payload": {
+        "field1": "Field1",
+        "field2": "Field2",
+        "array": [
+            "item1",
+            "item2",
+            "item3"
+        ],
+        "numerical": 10
+    }
+}

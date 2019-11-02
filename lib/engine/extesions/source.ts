@@ -9,7 +9,7 @@ export class SourceLayer extends BaseSimulator<SourceDescription> {
 
     private dataStore: DataIndex<Object>;
 
-    constructor(data: DataIndex<Object>) {
+    constructor(data: DataIndex<Object> | {}) {
         let config: SimulationConfig = {
             namespace: "source-layer"
         }
@@ -53,7 +53,7 @@ export class SourceLayer extends BaseSimulator<SourceDescription> {
             context.res
                 .status(ResponseStatus.NOT_FOUND)
                 .send({ error: `${storeSettings.storeKey} store key not found` });
-                
+
             return;
         }
 
