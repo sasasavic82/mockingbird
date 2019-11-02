@@ -1,5 +1,5 @@
 import {} from "../common/types"
-import { BaseSimulator } from "../mockEngine"
+import { BaseSimulator } from "../baseSimulator"
 import { SimulationConfig, SimulatorContext } from "../common/types"
 
 export enum DelayType {

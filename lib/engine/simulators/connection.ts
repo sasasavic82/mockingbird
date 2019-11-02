@@ -1,5 +1,4 @@
-import {} from "../common/types"
-import { BaseSimulator } from "../mockEngine"
+import { BaseSimulator } from "../baseSimulator"
 import { SimulationConfig, SimulatorContext, ResponseStatus } from "../common/types"
 
 export enum ConnectionFaultType {

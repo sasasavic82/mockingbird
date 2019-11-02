@@ -9,6 +9,8 @@ export * from "./lib/engine/simulators";
 export * from "./lib/engine/common/types";
 export * from "./lib/engine/common/errors";
 export * from "./lib/engine/mockEngine";
+export * from "./lib/engine/baseSimulator";
+export * from "./lib/engine/extesions/source";
 export * from "./lib/utils/serviceTypes";
 export * from "./lib/utils/tools";
 export * from "./lib/utils/index";
