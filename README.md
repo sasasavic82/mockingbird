@@ -109,7 +109,7 @@ Supported source types currently are `body` and `store`, which is a locally load
 			"type": "store",
 			"settings": {
 				"storeKey": "people",
-				"query": "id=1"
+				"query": "people[id=1]"
 			}
 		},
 		"simulators": {
@@ -121,6 +121,49 @@ Supported source types currently are `body` and `store`, which is a locally load
 	},
 	body: ...
 ```
+
+### store source type settings
+In the above example, we separate differet data via a storeKey. An example data, loaded in Mockingbird, may look like:
+
+```
+{
+    "people": [
+        {
+            "id": 1,
+            "name": "Joe",
+            "surame": "Bloggs",
+            "age": 35,
+            "address": {
+                "street": "666 Evil Street",
+                "city": "Sydney"
+            }
+        },
+        {
+            "id": 2,
+            "name": "Marry",
+            "surame": "Jones",
+            "age": 29,
+            "address": {
+                "street": "172 Cool Street",
+                "city": "Brisbae"
+            }
+        }
+    ],
+    "payload": {
+        "field1": "Field1",
+        "field2": "Field2",
+        "array": [
+            "item1",
+            "item2",
+            "item3"
+        ],
+        "numerical": 10
+    }
+}
+```
+
+If we'd like to interrogate the `people`, we would supply `people` as the `storeKey` attribute, and query associated with the data.
+We are using [JSONata] as the expression/query engine.
 
 ## Mockingbird simulation layers
 Mockingbird comes with a number of simulation middleware layers. As HTTP requests are
@@ -555,5 +598,6 @@ For support, please please raise a support ticket :)
 [NPM]: https://www.npmjs.com/
 [Serverless]: https://serverless.com/
 [LinkedIn]: https://www.linkedin.com/in/sasasavic/
-[npm-image]: https://img.shields.io/badge/npm-v1.1.1-blue
+[npm-image]: https://img.shields.io/badge/npm-v1.2.0-blue
 [npm-url]: https://www.npmjs.com/package/@imbueapp/mockingbird
+[JSONata]: http://docs.jsonata.org/

@@ -12,7 +12,7 @@ export interface ProxySettings {
 
 export interface StoreSettings {
     storeKey: string,
-    query: string
+    query?: string
 }
 
 export enum SourceTypes {
