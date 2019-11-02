@@ -4,6 +4,7 @@ import {
     SimulatorRequest, SimulatorResponse, NextSimulator, IncomingData, ExtendableSettings, SelectorHandler,
     StoreSettings, DataIndex, ResponseStatus
 } from "../common/types"
+import jsonata from "jsonata";
 
 export class SourceLayer extends BaseSimulator<SourceDescription> {
 
@@ -49,7 +50,7 @@ export class SourceLayer extends BaseSimulator<SourceDescription> {
         if (!storeSettings)
             return;
 
-        if(!this.dataStore.hasOwnProperty(storeSettings.storeKey)) {
+        if (!this.dataStore.hasOwnProperty(storeSettings.storeKey)) {
             context.res
                 .status(ResponseStatus.NOT_FOUND)
                 .send({ error: `${storeSettings.storeKey} store key not found` });
@@ -57,10 +58,28 @@ export class SourceLayer extends BaseSimulator<SourceDescription> {
             return;
         }
 
-        context.res.locals.body = this.dataStore[storeSettings.storeKey];
+        try {
+            context.res.locals.body =
+                storeSettings.query ? this.evaluateQuery(storeSettings) : this.dataStore[storeSettings.storeKey]
+
+        } catch(e) {
+            context.res
+                .status(ResponseStatus.BAD_REQUEST)
+                .send({ error: `Unable to evaluate query '${storeSettings.query}'` });
+            return;
+        }
 
         return context.next();
- 
+
+
+    }
+
+    private evaluateQuery(settings: StoreSettings): any {
+        let data: any = {
+            [settings.storeKey]: this.dataStore[settings.storeKey]
+        }
+        let expression: jsonata.Expression = jsonata(settings.query as string);
+        return expression.evaluate(data);
     }
 
 }
