@@ -563,7 +563,7 @@ simulator[SecuritySimulator:security:initialize] loaded SecuritySimulator simula
 ```
 And running the following payload against our running Mockingbird service will yield:
 
-![Alt text](./docs/hacked.png)
+![Alt text](./docs/security.png)
 
 Pretty cool eh? :)
 
