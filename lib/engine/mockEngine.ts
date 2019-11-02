@@ -6,7 +6,6 @@ import {
 } from "./common/types";
 import { SourceLayer } from "./extesions/source";
 import { SimulatorExistsError } from "./common/errors";
-import { thisExpression } from "@babel/types";
 
 /**
  * Place where we load/unload simulators. It is also the primary entry-point for all requests.
