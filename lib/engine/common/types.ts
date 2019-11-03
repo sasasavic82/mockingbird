@@ -6,8 +6,15 @@ export enum MockingResult {
     Failure = "failure"
 }
 
+export interface Indexed {
+    [key: string]: any
+}
+
 export interface ProxySettings {
-    url: string
+    uri: string
+    headers?: Indexed,
+    qs?: Indexed,
+    [key: string]: any;
 }
 
 export interface StoreSettings {
@@ -16,7 +23,7 @@ export interface StoreSettings {
 }
 
 export enum SourceTypes {
-    Proxy = "proxy",
+    Http = "http",
     Store = "store",
     Body = "body"
 }
