@@ -2,9 +2,11 @@ import { BaseSimulator } from "../baseSimulator"
 import {
     SimulationConfig, SimulatorContext, SourceDescription, SourceTypes,
     SimulatorRequest, SimulatorResponse, NextSimulator, IncomingData, ExtendableSettings, SelectorHandler,
-    StoreSettings, DataIndex, ResponseStatus
+    StoreSettings, DataIndex, ResponseStatus, ProxySettings
 } from "../common/types"
 import jsonata from "jsonata";
+import request from 'request-promise-native';
+
 
 export class SourceLayer extends BaseSimulator<SourceDescription> {
 
@@ -33,18 +35,21 @@ export class SourceLayer extends BaseSimulator<SourceDescription> {
         this.evaluate(context)
     }
 
-    evaluate(context: SimulatorContext<SourceDescription>): void {
+    async evaluate(context: SimulatorContext<SourceDescription>): Promise<any> {
 
         if (context.settings.type == SourceTypes.Body)
             return context.next();
 
         if (context.settings.type == SourceTypes.Store)
-            return this.fetchData(context);
+            return this.fetchStoreData(context);
+
+        if(context.settings.type == SourceTypes.Http)
+            return this.fetchHttpData(context);
 
         context.next();
     }
 
-    fetchData(context: SimulatorContext<SourceDescription>): void {
+    fetchStoreData(context: SimulatorContext<SourceDescription>): void {
         let storeSettings: StoreSettings = context.settings.settings as StoreSettings;
 
         if (!storeSettings)
@@ -71,6 +76,30 @@ export class SourceLayer extends BaseSimulator<SourceDescription> {
 
         return context.next();
 
+
+    }
+
+    async fetchHttpData(context: SimulatorContext<SourceDescription>): Promise<any> {
+        
+        let proxySettings: ProxySettings = context.settings.settings as ProxySettings;
+
+        // Force JSON
+        proxySettings["json"] = true;
+        
+        if (!proxySettings)
+            return;
+
+        try {
+            context.res.locals.body = await request(proxySettings);
+
+        } catch(e) {
+            context.res
+                .status(ResponseStatus.BAD_REQUEST)
+                .send({ error: `Unable to reach '${proxySettings.uri}'` });
+            return;
+        }
+
+        return context.next();
 
     }
 
