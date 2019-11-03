@@ -20,8 +20,6 @@ Mockingbird is built so that it can be used as an [NPM] package. It can also be
 used as a stand-alone `cli` as well as part of a [Serverless] ecosystem by deploying
 it using `serverless framework`.
 
-The current version supports adding new simulation layers. Future version will allow for
-extension of existing layers through extnesion of `classes` and `interfaces`.
 
 Mockingbird is completely stateless, making it highly scalable. You can run it in one container
 or a thousand 🤓 Being *programmable* means that with every request, you simply supply the kinds of simulations you'd
