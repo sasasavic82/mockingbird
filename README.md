@@ -96,9 +96,9 @@ export MOCKINGBIRD_SERVICE_PORT=5555
 ## Running the Mockingbird service and hitting Postman requests
 ![Alt text](./docs/mockingbird_demo.png)
 
-## Mockingbird store layers
+## Mockingbird source layers
 Mockingbird allows you to specify a `source layer` that enables loading simulation data from locations other than the `body` property.
-Supported source types currently are `body` and `store`, which is a locally loaded `JSON` payload. In the coming release, we will support proxying `http` calls to other services.
+Supported source types currently are `body`, and `store`, which is a locally loaded `JSON` payload. In the coming release, we will support proxying `http` calls to other services.
 
 ```
 	"settings": {
