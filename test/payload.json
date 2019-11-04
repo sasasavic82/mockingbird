@@ -1,0 +1,15 @@
+{
+	"settings": {
+		"failureProbability": 1,
+		"simulators": {
+			"body": {
+				"randomRemove": true
+			}
+		}
+	},
+	"body": {
+		"name": "Sasa",
+		"surname": "Savic",
+		"handle": "sasasavic82"
+	}
+}

@@ -10,7 +10,7 @@
     "prepublishOnly": "npx tsc",
     "dev": "tsc-watch --onSuccess \"node ./bin/mockingbird\"",
     "start": "npm run print:project && npx pm2 start cluster.yml",
-    "test": "NODE_ENV=test LOG_LEVEL=off jest test/*.test.js --detectOpenHandles",
+    "test": "npx tsc && NODE_ENV=test LOG_LEVEL=off jest test/*.test.js",
     "print:project": "asciify ' mockingbird ' -f puffy"
   },
   "repository": {

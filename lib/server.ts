@@ -60,4 +60,12 @@ export class MockingServer {
             console.log(`🕊️ mockingbird 🕊️ server is running http://localhost:${this.config.port}...`);
         });
     }
+
+    stopService() {
+        try {
+            this.server.close();
+        } catch(e) {
+            console.log(e);
+        }
+    }
 }
