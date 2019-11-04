@@ -164,6 +164,29 @@ In the above example, we separate differet data via a storeKey. An example data,
 If we'd like to interrogate the `people`, we would supply `people` as the `storeKey` attribute, and query associated with the data.
 We are using [JSONata] as the expression/query engine.
 
+### http source type settings
+In the below example, setup Mockingservice to proxy a HTTP call to another service, query the results and run them through the simulationn layer(s).
+Below, we are setting the failure probability to 50% and running the queried response through a `body.randomRemove` simulator.
+
+```
+{
+	"settings": {
+		"failureProbability": 0.5,
+		"source": {
+			"type": "http",
+			"settings": {
+				"uri": "https://jsonplaceholder.typicode.com/todos/1"
+			}
+		},
+		"simulators": {
+			"body": {
+				"randomRemove": true
+			}
+		}
+	}
+}
+```
+
 ## Mockingbird simulation layers
 Mockingbird comes with a number of simulation middleware layers. As HTTP requests are
 traversed through the different layers, a probability of fault occurence is calculated.
@@ -280,7 +303,8 @@ Example below, delaying for `1000ms` (1 second)
 ```
 
 #### Uniform delay
-**TBA**
+**IN-PROGRESS**
+
 A uniform distribution can be used for simulating a stable latency with a fixed amount of jitter. You define it via:
 
 lower - Lower bound of the range, inclusive.
@@ -309,7 +333,8 @@ For instance, to simulate a stable latency of 20ms +/- 5ms, use lower = 15 and u
 ```
 
 #### Lognormal delay
-**TBA**
+**IN-PROGRESS**
+
 In addition to fixed delays, a delay can be sampled from a random distribution. This allows simulation of more specific downstream latencies, such as a long tail.
 
 A lognormal distribution is a pretty good approximation of long tailed latencies centered on the 50th percentile. It takes two parameters:
@@ -338,7 +363,7 @@ sigma - Standard deviation. The larger the value, the longer the tail.
 ```
 
 #### Chunk dribble delay
-**TBA**
+**IN-PROGRESS**
 
 Dribble your responses back in chunks. This is very useful when simulating slow networks and deterministic timeouts.
 
