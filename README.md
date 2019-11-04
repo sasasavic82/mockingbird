@@ -20,8 +20,6 @@ Mockingbird is built so that it can be used as an [NPM] package. It can also be
 used as a stand-alone `cli` as well as part of a [Serverless] ecosystem by deploying
 it using `serverless framework`.
 
-The current version supports adding new simulation layers. Future version will allow for
-extension of existing layers through extnesion of `classes` and `interfaces`.
 
 Mockingbird is completely stateless, making it highly scalable. You can run it in one container
 or a thousand 🤓 Being *programmable* means that with every request, you simply supply the kinds of simulations you'd
@@ -98,9 +96,10 @@ export MOCKINGBIRD_SERVICE_PORT=5555
 ## Running the Mockingbird service and hitting Postman requests
 ![Alt text](./docs/mockingbird_demo.png)
 
-## Mockingbird store layers
+## Mockingbird source layers
 Mockingbird allows you to specify a `source layer` that enables loading simulation data from locations other than the `body` property.
 Supported source types currently are `body`, `http` and `store`, which is a locally loaded `JSON` payload.
+
 
 ```
 	"settings": {
