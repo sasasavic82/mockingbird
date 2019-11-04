@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import {
     IncomingData, ExtendableSettings, ISimulation, SimulatorResponse,
     SimulatorRequest, NextSimulator, SimulationConfig, SimulatorContext,
-    SimulatorContextCallback, ProbabilityResponse, 
+    SimulatorContextCallback, ProbabilityResponse,
     SimulatorIndex, SelectorHandler
 } from "./common/types";
 
@@ -48,15 +48,10 @@ export abstract class BaseSimulator<T> implements ISimulation {
      */
     ingest(req: SimulatorRequest, res: SimulatorResponse, next: NextSimulator): any {
 
-        this.log("ingest", "entering " + chalk.blue(`${this.constructor.name} simulator`));
-
         let incomingData: IncomingData = res.locals as IncomingData;
         let settings: ExtendableSettings<T> = this.castSettings(incomingData.settings);
 
-        /**
-         * Shall we fail or not? Let's roll the dice :)
-         */
-        if (this.generateFailure(settings.failureProbability).passed)
+        if (!settings || !settings.simulators)
             return next();
 
         let selector: SelectorHandler<T> = () => {
@@ -66,8 +61,16 @@ export abstract class BaseSimulator<T> implements ISimulation {
         let context: SimulatorContext<T> = this.contextualize(incomingData.body, selector, req, res, next);
 
 
-        if (context.settings == undefined)
+        if (!context.settings)
             return next();
+
+        this.log("ingest", "found " + chalk.blue(`${this.constructor.name} simulator`));
+        /**
+        * Shall we fail or not? Let's roll the dice :)
+        */
+        if (this.generateFailure(settings.failureProbability).passed)
+            return next();
+
 
         this.log("evaluate", "processing " + chalk.blue(`${this.constructor.name} simulator`));
 

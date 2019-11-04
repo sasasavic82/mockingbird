@@ -100,7 +100,7 @@ export MOCKINGBIRD_SERVICE_PORT=5555
 
 ## Mockingbird store layers
 Mockingbird allows you to specify a `source layer` that enables loading simulation data from locations other than the `body` property.
-Supported source types currently are `body` and `store`, which is a locally loaded `JSON` payload. In the coming release, we will support proxying `http` calls to other services.
+Supported source types currently are `body`, `http` and `store`, which is a locally loaded `JSON` payload.
 
 ```
 	"settings": {
@@ -598,6 +598,6 @@ For support, please please raise a support ticket :)
 [NPM]: https://www.npmjs.com/
 [Serverless]: https://serverless.com/
 [LinkedIn]: https://www.linkedin.com/in/sasasavic/
-[npm-image]: https://img.shields.io/badge/npm-v1.2.2-blue
+[npm-image]: https://img.shields.io/badge/npm-v1.2.3-blue
 [npm-url]: https://www.npmjs.com/package/@imbueapp/mockingbird
 [JSONata]: http://docs.jsonata.org/

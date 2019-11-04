@@ -19,6 +19,10 @@ export class MockingEngine implements ISimulation {
         this.simulatorLayers = this.internalLoadSimulators();
     }
 
+    /**
+     * Load the simulators
+     * @param simulators array of simulator instances
+     */
     public loadSimulators(simulators: ISimulation | ISimulation[]): IDisposable[] {
 
         if (!Array.isArray(simulators))
@@ -27,6 +31,9 @@ export class MockingEngine implements ISimulation {
         return (simulators as ISimulation[]).map((simulator) => this.internalLoad(simulator));
     }
 
+    /**
+     * Return the instance of the SourceLayer
+     */
     public getSourceLayer(): SourceLayer | undefined {
         return this.config ? this.config.sourceLayer : undefined;
     }
@@ -84,12 +91,12 @@ export class MockingEngine implements ISimulation {
              * wrapper. This is required so thtt we don't lose context of the child `class` that
              * inherits the `ISimulation` interface.
              */
-            return (req: Request, res: Response, next: NextFunction): void =>
+            return (req: SimulatorRequest, res: SimulatorResponse, next: NextSimulator): void =>
                 simulator.ingest(req, res, next);
         });
     }
 
-    public ingest(req: Request, res: Response, next: NextFunction): any {
+    public ingest(req: SimulatorRequest, res: SimulatorResponse, next: NextSimulator): any {
 
         /**
          * TODO: YOU MUST GET RID OF THE SECOND && THIRD CONDITION THAT CHECKS FOR SIMULATORS
@@ -97,11 +104,11 @@ export class MockingEngine implements ISimulation {
          * IF WE NEED TO RUN FAULT SIMULATION
          */
 
-        if (!req.body.settigs && !req.body.body)
+        if (!req.body.settings && !req.body.body)
             return res.status(ResponseStatus.BAD_REQUEST).send({ error: "Supply body or settings property" })
 
-        if (req.body.settings && /*!req.body.settings.source ||*/ !req.body.settings.simulators)
-            return res.status(ResponseStatus.OK).send(req.body);
+//        if (req.body.settings && /*!req.body.settings.source ||*/ !req.body.settings.simulators)
+//            return res.status(ResponseStatus.OK).send(req.body);
 
         const parseIncomingData = (body: any): IncomingData => {
             return {

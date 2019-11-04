@@ -26,18 +26,25 @@ export class SourceLayer extends BaseSimulator<SourceDescription> {
         let incomingData: IncomingData = res.locals as IncomingData;
         let settings: ExtendableSettings<SourceDescription> = super.castSettings((incomingData).settings);
 
-        if (!settings.source)
+        if (!settings || !settings.source)
             return next();
 
         let selector: SelectorHandler<SourceDescription> = () => settings.source as SourceDescription;
         let context: SimulatorContext<SourceDescription> = this.contextualize(incomingData.body, selector, req, res, next);
+
+        if (context.settings.type == SourceTypes.Body && !context.body) {
+            context.res
+                .status(ResponseStatus.BAD_REQUEST)
+                .send({ error: `source type of ${context.settings.type} supplied, but body parameter is empty` });
+            return;
+        }
 
         this.evaluate(context)
     }
 
     async evaluate(context: SimulatorContext<SourceDescription>): Promise<any> {
 
-        if (context.settings.type == SourceTypes.Body)
+        if(context.settings.type == SourceTypes.Body)
             return context.next();
 
         if (context.settings.type == SourceTypes.Store)
@@ -85,7 +92,7 @@ export class SourceLayer extends BaseSimulator<SourceDescription> {
 
         // Force JSON
         proxySettings["json"] = true;
-        
+
         if (!proxySettings)
             return;
 
