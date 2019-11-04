@@ -4,6 +4,9 @@ import { maybeWithDefault } from "../../utils/tools";
 import { KeyValue } from "../../utils/serviceTypes";
 import chalk from "chalk";
 
+import randomstring from "randomstring";
+
+
 export enum ConnectionFaultType {
     EmptyResponse = "empty_response",
     ConnectioResetByPeer = "connection_reset_by_peer"
@@ -27,9 +30,11 @@ export class HeaderSimulator extends BaseSimulator<HeaderData> {
 
     evaluate(context: SimulatorContext<HeaderData>): void {
 
+        console.log(context.req.headers);
+
+        this.permutate(context);
         this.extraHeaders(context);
         this.injectRandom(context);
-        this.permutate(context);
 
         context.next();
     }
@@ -44,7 +49,8 @@ export class HeaderSimulator extends BaseSimulator<HeaderData> {
 
     private injectRandom(context: SimulatorContext<HeaderData>): any {
         if (maybeWithDefault(context.settings.injectRandom)(false)) {
-            this.log("injectRandom", `injecting random headers ` + chalk.red("NOTE: layer has not yet been implemented"));
+            this.log("injectRandom", `injecting random headers`);
+            context.res.set(randomstring.generate(), randomstring.generate());
         }
     }
 
