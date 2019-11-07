@@ -1,4 +1,4 @@
-import { IncomingData, ExtendableSettings } from "../engine/common/types";
+import { IncomingData, ExtendableSettings, SimulatorResponse } from "../engine/common/types";
 
 declare global {
     interface Number {
@@ -11,6 +11,15 @@ declare global {
     interface Object {
         parseRequestData(): IncomingData
     }
+
+    interface String {
+        chunkIt(chunks: number): RegExpExecArray
+    }
+
+    interface Object {
+        chunkIt(chunks: number): string[]
+    }
+
 }
 
 Number.prototype.thousandsSeperator = function (): string {
@@ -24,5 +33,22 @@ Object.prototype.parseRequestData = function(this: any): IncomingData {
     };   
 }
 
+Object.prototype.chunkIt = function(chunks: number): string[] {
+
+    let stringifiedData = JSON.stringify(this);
+
+    console.log(stringifiedData);
+
+    if(stringifiedData === null || stringifiedData === undefined)
+        return [];
+
+    let chunkLength: number = Math.ceil(stringifiedData.length / chunks)
+
+    let regex = '[\\s\\S]{1,' + chunkLength + '}';
+
+    let parts = stringifiedData.match(new RegExp(regex, "g")) || [];
+
+    return parts as [];
+}
 
 export { };
