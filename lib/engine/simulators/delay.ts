@@ -101,8 +101,12 @@ class ChunkDribble {
             if(!currentChunk)
                 return Promise.resolve();
 
-            context.res.write(currentChunk);
-    
+            try {
+                context.res.write(currentChunk);
+            } catch(e) {
+                context.res.end();
+            }
+            
             return Promise.resolve();
 
         }, this.getInterval(chunkDribbleDelaySettings), context.res);
