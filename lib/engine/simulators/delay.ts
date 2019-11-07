@@ -1,6 +1,7 @@
-import {} from "../common/types"
+import "../../utils/extesions";
+
 import { BaseSimulator } from "../baseSimulator"
-import { SimulationConfig, SimulatorContext } from "../common/types"
+import { SimulationConfig, SimulatorContext, SimulatorResponse } from "../common/types"
 
 export enum DelayType {
     Lognormal = "lognormal",
@@ -37,6 +38,9 @@ export type DelayData = {
 
 
 export class DelaySimulator extends BaseSimulator<DelayData> {
+
+    private chunkDribble: ChunkDribble = new ChunkDribble();
+
     constructor(config: SimulationConfig) {
         super(config);
         this.namespace = "delay";
@@ -44,25 +48,85 @@ export class DelaySimulator extends BaseSimulator<DelayData> {
 
     evaluate(context: SimulatorContext<DelayData>): void {
 
-        if((context.settings as any).type == DelayType.Fixed) {
-            return this.fixedDelay(context, 
-                ((context.settings as any).delay));
+        if ((context.settings as any).type == DelayType.Fixed) {
+            return this.fixedDelay(context);
+        }
+
+        if ((context.settings as any).type == DelayType.ChunkedDribble) {
+            return this.chunked(context);
         }
 
         context.next();
     }
 
-    private fixedDelay(context: SimulatorContext<DelayData>, delayValue: number): any {
-        this.log("FixedDelay", `delaying for ${delayValue}ms`)
-        return setTimeout(context.next, delayValue);
+    private fixedDelay(context: SimulatorContext<DelayData>): any {
+        let fixedDelaySettings: FixedDelay = (context.settings as any) as FixedDelay;
+        this.log("FixedDelay", `delaying for ${fixedDelaySettings.delay}ms`)
+        return setTimeout(context.next, fixedDelaySettings.delay);
+    }
+
+    private chunked(context: SimulatorContext<DelayData>): void {
+        let chunkDribbleDelaySettings: ChunkedDribbleDelay = (context.settings as any) as ChunkedDribbleDelay;
+        this.log("ChunkDribble", `dribbling response of ${chunkDribbleDelaySettings.numberOfChunks} chunks over ${chunkDribbleDelaySettings.duration}ms`)
+        return this.chunkDribble.dribble(context);
     }
 }
 
-export class ChunkedDribbleDelaySimulator extends DelaySimulator {
-    constructor(config: SimulationConfig) {
-        super(config);
-        this.namespace = "delay"
+
+interface FunctionCallback {
+    (chunkIndex: number): Promise<void>
+}
+
+class ChunkDribble {
+
+    constructor() { }
+
+    dribble(context: SimulatorContext<DelayData>): void {
+        
+        let chunkDribbleDelaySettings: ChunkedDribbleDelay = (context.settings as any) as ChunkedDribbleDelay;
+
+        this.setChunkedResponse(context.res);
+        
+        let chunks = (context.body as Object).chunkIt(chunkDribbleDelaySettings.numberOfChunks);
+
+        if(!chunks || chunks.length <= 0)
+            return context.next();
+
+        chunks = chunks.reverse();
+
+        this.internalDribble(chunkDribbleDelaySettings.numberOfChunks - 1, (chunkIndex) => {
+
+            let currentChunk = (chunks as string[])[chunkIndex] ? (chunks as string[])[chunkIndex]: null;
+
+            if(!currentChunk)
+                return Promise.resolve();
+
+            context.res.write(currentChunk);
+    
+            return Promise.resolve();
+
+        }, this.getInterval(chunkDribbleDelaySettings), context.res);
     }
 
-    
+    private internalPause(duration: number): Promise<any> {
+        return new Promise((res) => setTimeout(res, duration));
+    }
+
+    private internalDribble(chunks: number, fn: FunctionCallback, interval: number, res: SimulatorResponse): Promise<any> {
+        return fn(chunks).then(() =>
+            chunks > 0
+                ? this.internalPause(interval).then(() => this.internalDribble(chunks - 1, fn, interval, res)) 
+                : res.end());
+    }
+
+    private getInterval(settings: ChunkedDribbleDelay): number {
+        return Math.floor(settings.duration / settings.numberOfChunks);
+    }
+
+    private setChunkedResponse(res: SimulatorResponse): SimulatorResponse {
+        res.set("Transfer-Encoding", "chunked");
+        res.set("Content-Type", "text/event-stream");
+        return res;
+    }
+
 }
