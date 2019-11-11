@@ -46,6 +46,13 @@ export class MockingServer {
                 path: "/api/v1/mock",
                 method: "post",
                 handler: [...this.mockingEngineInstance().getSimulatorHandlers()]
+            },
+            {
+                path: "/healthcheck",
+                method: "get",
+                handler: (req: express.Request, res: express.Response): Promise<void> | void => {
+                    res.status(200).json({ health: "OK" });
+                }
             }
         ]
     }
