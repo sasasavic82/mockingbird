@@ -1,6 +1,6 @@
 # Mockingbird
 
-[![NPM version][npm-image]][npm-url] [![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/3335/badge)](https://bestpractices.coreinfrastructure.org/projects/3335)
+[![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/3335/badge)](https://bestpractices.coreinfrastructure.org/projects/3335)
 
 ![Alt text](./docs/mockingbird_logo.png)
 
