@@ -9,7 +9,9 @@
     "postinstall": "npx tsc",
     "prepublishOnly": "npx tsc",
     "dev": "tsc-watch --onSuccess \"node ./bin/mockingbird\"",
-    "start": "npm run print:project && npx pm2 start cluster.yml",
+    "mockingbird:singlenode:test": "NODE_ENV=production npm run print:project && node ./bin/mockingbird",
+    "mockingbird:cluster": "NODE_ENV=production npm run print:project && npx pm2 start cluster.yml",
+    "mockingbird:singlenode": "NODE_ENV=production npm run print:project && node ./bin/mockingbird",
     "test": "npx tsc && NODE_ENV=test LOG_LEVEL=off jest test/*.test.js",
     "print:project": "asciify ' mockingbird ' -f puffy"
   },
