@@ -104,6 +104,11 @@ export class MockingEngine implements ISimulation {
          * IF WE NEED TO RUN FAULT SIMULATION
          */
 
+        if(this.config && this.config.debug){
+            console.log(req.body);
+            console.log(req.headers);
+        }
+
         if (!req.body.settings && !req.body.body)
             return res.status(ResponseStatus.BAD_REQUEST).send({ error: "Supply body or settings property" })
 

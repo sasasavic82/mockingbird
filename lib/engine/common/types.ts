@@ -75,6 +75,7 @@ export enum ResponseStatus {
 
 export interface EngineConfig {
     sourceLayer?: SourceLayer;
+    debug?: boolean
 }
 
 export interface SimulationConfig {
