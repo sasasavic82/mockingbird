@@ -6,7 +6,8 @@ let { MockingEngine } = require('../dist/lib/engine/mockEngine');
 let sourceLayer = new SourceLayer(require('./test_data.json'));
 
 let engineConfig = {
-  sourceLayer: sourceLayer    
+  sourceLayer: sourceLayer,
+  debug: process.env.NODE_ENV === "production" ? false : true  
 }
 
 let simulators = require('../dist/lib/engine/simulators');
