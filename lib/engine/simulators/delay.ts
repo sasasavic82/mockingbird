@@ -2,12 +2,20 @@ import "../../utils/extesions";
 
 import { BaseSimulator } from "../baseSimulator"
 import { SimulationConfig, SimulatorContext, SimulatorResponse } from "../common/types"
+import { randomBetween } from "../../utils/tools"
 
 export enum DelayType {
     Lognormal = "lognormal",
     Uniform = "uniform",
     ChunkedDribble = "chunked_dribble",
-    Fixed = "fixed"
+    Fixed = "fixed",
+    Random = "random"
+}
+
+export type RandomDelay = {
+    type: DelayType.Random,
+    from: number, // 90
+    to: number // 0.1
 }
 
 export type LognormalDelay = {
@@ -56,6 +64,10 @@ export class DelaySimulator extends BaseSimulator<DelayData> {
             return this.chunked(context);
         }
 
+        if ((context.settings as any).type == DelayType.Random) {
+            return this.randomDelay(context);
+        }
+
         context.next();
     }
 
@@ -64,6 +76,13 @@ export class DelaySimulator extends BaseSimulator<DelayData> {
         this.log("FixedDelay", `delaying for ${fixedDelaySettings.delay}ms`)
         return setTimeout(context.next, fixedDelaySettings.delay);
     }
+
+    private randomDelay(context: SimulatorContext<DelayData>): any {
+        let randomDelaySettings: RandomDelay = (context.settings as any) as RandomDelay;
+        let delay: number = randomBetween(randomDelaySettings.from, randomDelaySettings.to);
+        this.log("RandomDelay", `delaying for ${delay}ms`)
+        return setTimeout(context.next, delay);
+    }    
 
     private chunked(context: SimulatorContext<DelayData>): void {
         let chunkDribbleDelaySettings: ChunkedDribbleDelay = (context.settings as any) as ChunkedDribbleDelay;
