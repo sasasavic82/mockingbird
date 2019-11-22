@@ -29,7 +29,8 @@ export const mimeTypes = [
 
 export type BodyData = {
     randomRemove?: boolean,
-    randomContentType?: boolean
+    randomContentType?: boolean,
+    extremelyLargePayload?: boolean
 }
 
 export class BodySimulator extends BaseSimulator<BodyData> {
@@ -40,6 +41,7 @@ export class BodySimulator extends BaseSimulator<BodyData> {
 
     evaluate(context: SimulatorContext<BodyData>): void {
 
+        this.extremelyLargePayload(context);
         this.randomContentType(context);
         let body = this.randomRemove(context);
         context.res.locals.body = body;
@@ -65,5 +67,11 @@ export class BodySimulator extends BaseSimulator<BodyData> {
             context.res.set("Content-Type", contentType);
         }
     }
+
+    private extremelyLargePayload(context: SimulatorContext<BodyData>): any {
+        if (maybeWithDefault(context.settings.extremelyLargePayload)(false)) {
+            this.log("extremelyLargePayload", `generaling extremely large payload ` + chalk.red("NOTE: layer has not yet been implemented"));
+        }
+    }    
 
 }
