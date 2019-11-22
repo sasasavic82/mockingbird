@@ -1,24 +1,19 @@
 import { SimulationConfig, SimulatorContext } from "../common/types";
 import { BaseSimulator } from "../baseSimulator"
-import { maybeWithDefault } from "../../utils/tools";
+import { maybeWithDefault, randomBetween } from "../../utils/tools";
 import { KeyValue } from "../../utils/serviceTypes";
+
+import { allowFakeLength } from "../../utils/monkeyPatch"
+
 import chalk from "chalk";
 
 import randomstring from "randomstring";
 
-
-export enum ConnectionFaultType {
-    EmptyResponse = "empty_response",
-    ConnectioResetByPeer = "connection_reset_by_peer"
-}
-
-export type ConnectionFaultData = {
-    connection: ConnectionFaultType
-}
-
 export type HeaderData = {
+    duplicateHeader?: string,
     injectRandom?: boolean,
-    permutate?: boolean
+    permutate?: boolean,
+    incorrectContentLength?: boolean
     extraHeaders?: KeyValue<string, string>[]
 }
 
@@ -35,13 +30,15 @@ export class HeaderSimulator extends BaseSimulator<HeaderData> {
         this.permutate(context);
         this.extraHeaders(context);
         this.injectRandom(context);
+        this.incorrectContentLength(context);
+        this.duplicateHeader(context);
 
         context.next();
     }
 
     private extraHeaders(context: SimulatorContext<HeaderData>): any {
-        this.log("extraHeaders", `injecting extra headers`);
         maybeWithDefault(context.settings.extraHeaders)([]).forEach((header) => {
+            this.log("extraHeaders", `injecting ${header}`);
             context.res.set(header.key, header.value);
         });
 
@@ -56,8 +53,43 @@ export class HeaderSimulator extends BaseSimulator<HeaderData> {
 
     private permutate(context: SimulatorContext<HeaderData>): any {
         if (maybeWithDefault(context.settings.permutate)(false)) {
-            this.log("permutate", `permutating headers` + + chalk.red("NOTE: layer has not yet been implemented"));
+            this.log("permutate", `permutating headers` + chalk.red("NOTE: layer has not yet been implemented"));
         }
     }
 
+    private incorrectContentLength(context: SimulatorContext<HeaderData>): any {
+        if (maybeWithDefault(context.settings.incorrectContentLength)(false)) {
+            this.log("incorrectContentLength", `faking content length`);
+            const len: any = randomBetween(0, 1000);
+            context.res.send = allowFakeLength(true);
+            context.res.set("Content-Length", len);
+        }
+    }
+
+    private duplicateHeader(context: SimulatorContext<HeaderData>): any {
+        if(context.settings.duplicateHeader) {
+            let header: string = context.settings.duplicateHeader;
+
+            this.log("duplicateHeader", `duplicating ${header} header` + chalk.red("NOTE: layer has not yet been implemented"));
+
+            return;
+            
+            let headerValue: string | undefined = context.req.get(header);
+
+            console.log(headerValue);
+
+            if(headerValue) {
+
+                
+                context.res.set({
+                    [header]: headerValue,
+                    [header]: headerValue
+                });
+            
+                console.log(context.res.getHeaders)
+            }
+        }
+    }
 }
+
+

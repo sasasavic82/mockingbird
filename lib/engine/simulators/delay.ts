@@ -41,7 +41,7 @@ export type FixedDelay = {
 }
 
 export type DelayData = {
-    delay: LognormalDelay | UniformDelay | ChunkedDribbleDelay | FixedDelay
+    delay: LognormalDelay | UniformDelay | ChunkedDribbleDelay | FixedDelay | RandomDelay
 }
 
 
