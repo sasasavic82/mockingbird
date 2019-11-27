@@ -1,3 +1,7 @@
+import randomstring from "randomstring";
+
+const CHARACTERS_IN_1MB: number = 1048576;
+
 export const passed = (probabilityOfFailure: number | undefined): {
     random: number | undefined,
     passed: boolean
@@ -14,6 +18,13 @@ export const passed = (probabilityOfFailure: number | undefined): {
         passed: hasPassed
     }
 }
+
+export const largeString = (sizeInMb: number): string => {
+    let numberOfCharacters: number = sizeInMb * CHARACTERS_IN_1MB;
+    return randomstring.generate(numberOfCharacters);
+}
+
+
 
 export const randomBetween = (min: number, max: number): number => {
     //log(`generating random number between ${min} and ${max}`)

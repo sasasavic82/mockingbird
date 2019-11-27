@@ -3,7 +3,7 @@ import { BaseSimulator } from "../baseSimulator"
 import { maybeWithDefault, randomBetween } from "../../utils/tools";
 import { KeyValue } from "../../utils/serviceTypes";
 
-import { allowFakeLength } from "../../utils/monkeyPatch"
+import { overrideSend, OverrideSendConfig } from "../../utils/monkeyPatch"
 
 import chalk from "chalk";
 
@@ -60,9 +60,9 @@ export class HeaderSimulator extends BaseSimulator<HeaderData> {
     private incorrectContentLength(context: SimulatorContext<HeaderData>): any {
         if (maybeWithDefault(context.settings.incorrectContentLength)(false)) {
             this.log("incorrectContentLength", `faking content length`);
-            const len: any = randomBetween(0, 1000);
-            context.res.send = allowFakeLength(true);
-            context.res.set("Content-Length", len);
+            const len: any = randomBetween(0, 10000);
+            context.res.send = overrideSend({ contentLength: len });
+            //context.res.send(context.res.locals.body);
         }
     }
 

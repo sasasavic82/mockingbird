@@ -7,6 +7,9 @@
 # Created by https://www.gitignore.io/api/vim,git,code,linux,macos,emacs,windows
 # Edit at https://www.gitignore.io/?templates=vim,git,code,linux,macos,emacs,windows
 
+### BIG FILE ###
+big.txt
+
 ### Code ###
 .vscode
 .vscode/*
