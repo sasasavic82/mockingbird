@@ -15,11 +15,15 @@ export const setCharset = (type: any, charset: any): any => {
     // set charset
     parsed.parameters.charset = charset;
 
-    // format type
     return contentType.format(parsed);
 }
 
-export const allowFakeLength = (fake: boolean = false): BodyFunction => {
+export interface OverrideSendConfig {
+    contentLength?: number,
+    overrideCharset?: string
+}
+
+export const overrideSend = (config: OverrideSendConfig): BodyFunction => {
 
     let send: BodyFunction = function (this: any, body: any) {
         var chunk = body;
@@ -58,8 +62,9 @@ export const allowFakeLength = (fake: boolean = false): BodyFunction => {
             encoding = 'utf8';
             type = this.get('Content-Type');
             // reflect this in content-type
+
             if (typeof type === 'string') {
-                this.set('Content-Type', setCharset(type, 'utf-8'));
+                this.set('Content-Type', setCharset(type, config.overrideCharset ? config.overrideCharset : 'utf-8'));
             }
         }
 
@@ -84,8 +89,8 @@ export const allowFakeLength = (fake: boolean = false): BodyFunction => {
                 encoding = undefined;
                 len = chunk.length
             }
-            if (!fake)
-                this.set('Content-Length', len);
+            
+            this.set('Content-Length', config.contentLength ? config.contentLength : len);
         }
 
         // populate ETag

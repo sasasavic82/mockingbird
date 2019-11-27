@@ -2,6 +2,9 @@
 import http from "http";
 import express from "express";
 
+//import fs from "fs";
+import path from "path";
+
 import { buildMiddleware, buildRoutes, SimulatorRoute } from "./utils";
 import middleware from "./middleware";
 import errorHandlers from "./middleware/errorHandlers";
@@ -46,6 +49,18 @@ export class MockingServer {
                 path: "/api/v1/mock",
                 method: "post",
                 handler: [...this.mockingEngineInstance().getSimulatorHandlers()]
+            },
+            {
+                path: "/api/v1/mock/largefile",
+                method: "get",
+                handler: (req: express.Request, res: express.Response): Promise<void> | void => {
+                    let cwd: string = process.cwd();
+                    let filePath: string = path.join(cwd, "big.txt");
+        
+                    console.log(filePath);
+        
+                    res.download(filePath);
+                }
             },
             {
                 path: "/healthcheck",
