@@ -9,6 +9,10 @@ import { buildMiddleware, buildRoutes, SimulatorRoute } from "./utils";
 import middleware from "./middleware";
 import errorHandlers from "./middleware/errorHandlers";
 import { MockingEngine } from "./engine/mockEngine";
+import { BodySimulator } from "./engine/simulators";
+import { SimulationHandler, SimulatorRequest, SimulatorResponse, NextSimulator } from "./engine/common/types";
+
+let defaultHandler: SimulationHandler = (req: SimulatorRequest, res: SimulatorResponse, next: NextSimulator): any => res.status(501);
 
 process.on("uncaughtException", e => {
     console.log(e);
@@ -44,6 +48,13 @@ export class MockingServer {
     }
 
     private initialiseMockingRoute(): SimulatorRoute[] {
+
+        let bodyInstance = this.mockingEngineInstance().getSimulatorHandler<BodySimulator>("body");
+
+        let largeFileHandler: SimulationHandler = bodyInstance ? 
+            (req: SimulatorRequest, res: SimulatorResponse, next: NextSimulator): any => (bodyInstance as BodySimulator).largeFilesHandler(req, res, next) : 
+            defaultHandler;
+
         return [
             {
                 path: "/api/v1/mock",
@@ -51,16 +62,9 @@ export class MockingServer {
                 handler: [...this.mockingEngineInstance().getSimulatorHandlers()]
             },
             {
-                path: "/api/v1/mock/largefile",
+                path: "/api/v1/mock/download",
                 method: "get",
-                handler: (req: express.Request, res: express.Response): Promise<void> | void => {
-                    let cwd: string = process.cwd();
-                    let filePath: string = path.join(cwd, "big.txt");
-        
-                    console.log(filePath);
-        
-                    res.download(filePath);
-                }
+                handler: largeFileHandler
             },
             {
                 path: "/healthcheck",
