@@ -1,9 +1,10 @@
-import { Request, Response, NextFunction } from "express";
 import {
     IncomingData, ExtendableSettings, ISimulation, SimulatorResponse,
     SimulatorRequest, NextSimulator, IDisposable, SimulationHandler,
     ResponseStatus, EngineConfig
 } from "./common/types";
+
+import * as simulators from "./simulators";
 import { SourceLayer } from "./extesions/source";
 import { SimulatorExistsError } from "./common/errors";
 
@@ -74,6 +75,16 @@ export class MockingEngine implements ISimulation {
         let simIndex = this.simulatorLayers.indexOf(simulator);
         if (simIndex > -1)
             this.simulatorLayers.splice(simIndex, 1);
+    }
+
+    public getSimulatorHandler<T extends simulators.BodySimulator | simulators.ConnectionSimulator | simulators.DelaySimulator | simulators.HeaderSimulator>(namespace: string): T | undefined {
+
+        let simulators: ISimulation[] = this.simulatorLayers.filter((simulator) => simulator.namespace == namespace);
+
+        if(simulators.length <= 0)
+            return;
+
+        return simulators[0] as T;
     }
 
     /**
