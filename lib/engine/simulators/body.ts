@@ -51,7 +51,8 @@ export type BodyData = {
     randomContentType?: boolean,
     largePayload?: number, // Size in MB 0.01MB - 50MB
     largeFilesize?: FileSize,
-    encodingScheme?: string
+    encodingScheme?: string,
+    fakeEncoding?: boolean
 }
 
 export interface FileMapper {
@@ -87,18 +88,25 @@ export class BodySimulator extends BaseSimulator<BodyData> {
         this.largePayload(context);
         this.largeFileSize(context);
         this.randomContentType(context);
-        let body = this.randomRemove(context);
-        context.res.locals.body = body;
+        this.fakeEncoding(context);
+        this.randomRemove(context);
+
         context.next();
     }
 
     private randomRemove(context: SimulatorContext<BodyData>): any {
         if (maybeWithDefault(context.settings.randomRemove)(false)) {
             this.log("randomRemove", `randomly removing data properties`);
+
+            let ret: (any | any[]);
+
             if (Array.isArray(context.body))
-                return removeRandomArray(context.body);
+                ret = removeRandomArray(context.body);
             else
-                return removeRandomProperty(context.body);
+                ret = removeRandomProperty(context.body);
+
+            context.res.locals.body = ret;
+
         }
     }
 
@@ -109,6 +117,19 @@ export class BodySimulator extends BaseSimulator<BodyData> {
             this.log("randomContentType", `force-changing content type to ` + chalk.bold.green(`${contentType}`));
 
             context.res.set("Content-Type", contentType);
+        }
+    }
+
+    private fakeEncoding(context: SimulatorContext<BodyData>): any {
+        if (maybeWithDefault(context.settings.fakeEncoding)(false)) {
+
+            if(!context.req.headers["x-mockingbird-fake-compression"])
+                return;
+
+            context.res.setHeader("Content-Encoding", "gzip");
+            context.res.removeHeader("Content-Length");
+
+            this.log("fakeEncoding", `fake gzip encoding`);
         }
     }
 
@@ -174,7 +195,11 @@ export class BodySimulator extends BaseSimulator<BodyData> {
                 this.log("largePayload", `generated payload of ${context.settings.largePayload}MB`);
 
                 context.res.set("Content-Type", "text/plain");
-                context.res.send(this.responseBuffer[context.settings.largePayload]);
+
+                context.res.locals.body = this.responseBuffer[context.settings.largePayload]
+
+                //return context.next();
+                //context.res.send(this.responseBuffer[context.settings.largePayload]);
 
 
             }catch(e) {
