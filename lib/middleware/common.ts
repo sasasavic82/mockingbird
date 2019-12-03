@@ -1,7 +1,13 @@
-import { Router } from "express";
+import { Router, Request, Response } from "express";
 import cors from "cors";
 import parser from "body-parser";
 import compression from "compression";
+
+function shouldCompress(req: Request, res: Response) {
+    if(req.headers["x-mockingbird-fake-compression"])
+        return false;
+    return compression.filter(req, res);
+}
 
 export const handleCors = (router: Router) => router.use(cors({ credentials: true, origin: true }));
 
@@ -11,5 +17,7 @@ export const handleBodyRequestParsing = (router: Router) => {
 }
 
 export const handleCompression = (router: Router) => {
-    router.use(compression());
+    router.use(compression({
+       filter: shouldCompress
+    }));
 }

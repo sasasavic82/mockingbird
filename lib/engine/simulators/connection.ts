@@ -31,7 +31,7 @@ export class ConnectionSimulator extends BaseSimulator<ConnectionFaultData> {
 
     private connectionResetByPeer(context: SimulatorContext<ConnectionFaultData>): any {
         this.log("connectionResetByPeer", `abruptly resetting connection`)
-        return context.res.end();
+        return context.res.status(500).end();
     }
 
     private emptyResponse(context: SimulatorContext<ConnectionFaultData>): any {
