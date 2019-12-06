@@ -19,7 +19,8 @@ engine.loadSimulators([
   new simulators.DelaySimulator({ namespace: "delay"}),
   new simulators.ConnectionSimulator({ namespace: "connection" }),
   new simulators.HeaderSimulator({ namespace: "header" }),
-  new simulators.BodySimulator({ namespace: "body" })]
+  new simulators.BodySimulator({ namespace: "body" }),
+  new simulators.RequestSimulator({ namespace: "request" })]
 );
 
 let serverConfig = {

@@ -25,8 +25,6 @@ export class HeaderSimulator extends BaseSimulator<HeaderData> {
 
     evaluate(context: SimulatorContext<HeaderData>): void {
 
-        console.log(context.req.headers);
-
         this.permutate(context);
         this.extraHeaders(context);
         this.injectRandom(context);
