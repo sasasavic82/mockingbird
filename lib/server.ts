@@ -1,9 +1,7 @@
 
+import https from "https";
 import http from "http";
 import express from "express";
-
-//import fs from "fs";
-import path from "path";
 
 import { buildMiddleware, buildRoutes, SimulatorRoute } from "./utils";
 import middleware from "./middleware";
@@ -11,6 +9,8 @@ import errorHandlers from "./middleware/errorHandlers";
 import { MockingEngine } from "./engine/mockEngine";
 import { BodySimulator } from "./engine/simulators";
 import { SimulationHandler, SimulatorRequest, SimulatorResponse, NextSimulator } from "./engine/common/types";
+import { SecureContextOptions } from "tls";
+import net from "net";
 
 let defaultHandler: SimulationHandler = (req: SimulatorRequest, res: SimulatorResponse, next: NextSimulator): any => res.status(501);
 
@@ -28,17 +28,21 @@ export interface ServerConfig {
     port: number | string,
     debug?: boolean,
     engine: MockingEngine
+    secureContextOptions?: SecureContextOptions
 }
 
 export class MockingServer {
 
     private router: any;
-    private server: http.Server;
+    private server: net.Server;
 
     constructor(private config: ServerConfig) {
         this.router = express();
         this.initialiseMiddlewareAndRoutes();
-        this.server = http.createServer(this.router);
+        
+        this.server = this.config.secureContextOptions ?
+            https.createServer(this.config.secureContextOptions, this.router) :
+            http.createServer(this.router)
     }
 
     private initialiseMiddlewareAndRoutes(): void {
@@ -51,8 +55,8 @@ export class MockingServer {
 
         let bodyInstance = this.mockingEngineInstance().getSimulatorHandler<BodySimulator>("body");
 
-        let largeFileHandler: SimulationHandler = bodyInstance ? 
-            (req: SimulatorRequest, res: SimulatorResponse, next: NextSimulator): any => (bodyInstance as BodySimulator).largeFilesHandler(req, res, next) : 
+        let largeFileHandler: SimulationHandler = bodyInstance ?
+            (req: SimulatorRequest, res: SimulatorResponse, next: NextSimulator): any => (bodyInstance as BodySimulator).largeFilesHandler(req, res, next) :
             defaultHandler;
 
         return [
@@ -86,7 +90,7 @@ export class MockingServer {
     }
 
     startService() {
-        
+
         this.server.listen(this.config.port, () => {
             console.log(`🕊️ mockingbird 🕊️ server is running http://localhost:${this.config.port}...`);
         });
@@ -95,7 +99,7 @@ export class MockingServer {
     stopService() {
         try {
             this.server.close();
-        } catch(e) {
+        } catch (e) {
             console.log(e);
         }
     }

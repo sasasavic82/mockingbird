@@ -32,7 +32,7 @@ It's simple - you blast your Mockingbird service endpoint (i.e. `localhost:3333/
 specifying a `body` payload and a `settings` payload.
 
 ```
-curl -d "@data.json" -X POST http://localhost:3333/api/v1/mock
+curl -d "@data.json" -H "Content-Type: application/json" http://localhost:3333/api/v1/mock 
 ```
 
 ... `data.json` being:
@@ -496,7 +496,7 @@ Now, let's make a request using the following `data.json` payload:
 ```
 Run our curl command ...
 ```
-curl -d "@data.json" -X POST http://localhost:3333/api/v1/mock
+curl -d "@data.json" -H "Content-Type: application/json" http://localhost:3333/api/v1/mock 
 ```
 
 And the output we should get:
@@ -613,6 +613,33 @@ via a very powerful package called `pm2-runtime` that solves major issues when r
 * Automatic Application Monitoring to keep it always sane and high performing
 * Automatic Source Map Discovery and Resolving Support
 
+## Securing Mockingbird
+
+To configure Mockingbird as a secure server, specify the following environment variables:
+
+```
+MOCKINGBIRD_SERVER_CRT = <full path to server certificate PEM file>,
+MOCKINGBIRD_SERVER_KEY = <full path to server key PEM file>,
+```
+and access the server using `https`:
+
+```
+curl -d "@data.json" -H "Content-Type: application/json" https://localhost:3333/api/v1/mock 
+```
+
+### Client Certificate Validation (MASSL/MATLS)
+To configure Mockingbird to additionally validate client certificates against a CA, specify the 
+following environment variable in addition to the previous two:
+
+```
+MOCKINGBIRD_SERVER_CA = <full path to server CA PEM file>
+```
+
+and specify the appropriate client certificate when accessing the server, e.g.:
+
+```
+curl -d "@data.json" -H "Content-Type: application/json" http://localhost:3333/api/v1/mock --cert <full path to client crt file> --key <full path to client key file>
+```
 
 ## Support
 

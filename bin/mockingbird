@@ -5,6 +5,8 @@ let { MockingEngine } = require('../dist/lib/engine/mockEngine');
 
 let sourceLayer = new SourceLayer(require('./test_data.json'));
 
+const fs = require("fs");
+
 let engineConfig = {
   sourceLayer: sourceLayer,
   debug: process.env.NODE_ENV === "production" ? false : true  
@@ -13,7 +15,12 @@ let engineConfig = {
 let simulators = require('../dist/lib/engine/simulators');
 let engine = new MockingEngine(engineConfig);
 
-const { MOCKINGBIRD_SERVICE_PORT = 3333 } = process.env;
+const { 
+  MOCKINGBIRD_SERVICE_PORT = 3333,
+  MOCKINGBIRD_SERVER_CRT = null,
+  MOCKINGBIRD_SERVER_KEY = null,
+  MOCKINGBIRD_SERVER_CA = null
+} = process.env;
 
 engine.loadSimulators([
   new simulators.DelaySimulator({ namespace: "delay"}),
@@ -26,7 +33,26 @@ engine.loadSimulators([
 let serverConfig = {
     port: MOCKINGBIRD_SERVICE_PORT,
     debug: true,
-    engine: engine    
+    engine: engine
+}
+
+// Handle HTTPS and MATLS (client auth) configuration. If the MOCKINGBIRD_SERVER_CRT 
+// and MOCKINGBIRD_SERVER_KEY environment variables are both set, an HTTPS server 
+// will be started. If the MOCKINGBIRD_SERVER_CA environment variable is also set, 
+// the HTTPS server will validate client certificates using that CA.
+
+if (MOCKINGBIRD_SERVER_CRT && MOCKINGBIRD_SERVER_KEY) {
+  serverConfig.secureContextOptions = {
+    cert: fs.readFileSync(MOCKINGBIRD_SERVER_CRT),
+    key: fs.readFileSync(MOCKINGBIRD_SERVER_KEY)
+  };
+
+  if (MOCKINGBIRD_SERVER_CA) 
+    Object.assign(serverConfig.secureContextOptions, {
+      ca: fs.readFileSync(MOCKINGBIRD_SERVER_CA),
+      requestCert: true,
+      rejectUnauthorised: true
+    });
 }
 
 let mockingServer = new MockingServer(serverConfig);
