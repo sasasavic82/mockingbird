@@ -9,7 +9,7 @@ const fs = require("fs");
 
 let engineConfig = {
   sourceLayer: sourceLayer,
-  debug: process.env.NODE_ENV === "production" ? false : true  
+  debug: true //process.env.NODE_ENV === "production" ? false : true  
 }
 
 let simulators = require('../dist/lib/engine/simulators');
