@@ -23,6 +23,7 @@ const {
 } = process.env;
 
 engine.loadSimulators([
+  new simulators.CounterSimulator( {namespace: "counter" }),
   new simulators.DelaySimulator({ namespace: "delay"}),
   new simulators.ConnectionSimulator({ namespace: "connection" }),
   new simulators.HeaderSimulator({ namespace: "header" }),
