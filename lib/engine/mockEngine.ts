@@ -116,8 +116,8 @@ export class MockingEngine implements ISimulation {
          */
 
         if(this.config && this.config.debug){
-            console.log(req.body);
-            console.log(req.headers);
+            console.log(JSON.stringify(req.body));
+            console.log(JSON.stringify(req.headers));
         }
 
         if (!req.body.settings && !req.body.body)
