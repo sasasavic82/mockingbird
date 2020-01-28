@@ -2,6 +2,7 @@ import { Router, Request, Response } from "express";
 import cors from "cors";
 import parser from "body-parser";
 import compression from "compression";
+import timeout from "connect-timeout";
 
 function shouldCompress(req: Request, res: Response) {
     if(req.headers["x-mockingbird-fake-compression"])
@@ -20,4 +21,8 @@ export const handleCompression = (router: Router) => {
     router.use(compression({
        filter: shouldCompress
     }));
+}
+
+export const handleTimeout = (router: Router) => {
+    router.use(timeout("56s"));
 }
