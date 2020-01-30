@@ -43,6 +43,10 @@ export class MockingServer {
         this.server = this.config.secureContextOptions ?
             https.createServer(this.config.secureContextOptions, this.router) :
             http.createServer(this.router);
+
+        this.server.on('connection', (socket) => {
+            socket.setTimeout(61 * 1000);
+        })
     }
 
     private initialiseMiddlewareAndRoutes(): void {
@@ -95,9 +99,6 @@ export class MockingServer {
             console.log(`🕊️ mockingbird 🕊️ server is running http://localhost:${this.config.port}...`);
         });
 
-        this.server.on('connection', (socket) => {
-            socket.setKeepAlive(true, 61 * 1000);
-        })
     }
 
     stopService() {
