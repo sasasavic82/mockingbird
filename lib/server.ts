@@ -10,7 +10,6 @@ import { MockingEngine } from "./engine/mockEngine";
 import { BodySimulator } from "./engine/simulators";
 import { SimulationHandler, SimulatorRequest, SimulatorResponse, NextSimulator } from "./engine/common/types";
 import { SecureContextOptions } from "tls";
-import net from "net";
 
 let defaultHandler: SimulationHandler = (req: SimulatorRequest, res: SimulatorResponse, next: NextSimulator): any => res.status(501);
 
@@ -34,7 +33,7 @@ export interface ServerConfig {
 export class MockingServer {
 
     private router: any;
-    private server: net.Server;
+    private server: http.Server | https.Server; // net.Server;
 
     constructor(private config: ServerConfig) {
         this.router = express();
@@ -44,9 +43,8 @@ export class MockingServer {
             https.createServer(this.config.secureContextOptions, this.router) :
             http.createServer(this.router);
 
-        this.server.on('connection', (socket) => {
-            socket.setTimeout(61 * 1000);
-        })
+        this.server.keepAliveTimeout = 61 * 1000;
+        this.server.headersTimeout = 65 * 1000;
     }
 
     private initialiseMiddlewareAndRoutes(): void {
