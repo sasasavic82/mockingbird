@@ -24,5 +24,5 @@ export const handleCompression = (router: Router) => {
 }
 
 export const handleTimeout = (router: Router) => {
-    router.use(timeout("56s"));
+    router.use(timeout("59s"));
 }
