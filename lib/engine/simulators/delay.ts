@@ -14,30 +14,30 @@ export enum DelayType {
 
 export type RandomDelay = {
     type: DelayType.Random,
-    from: number, // 90
-    to: number // 0.1
+    from: number,
+    to: number
 }
 
 export type LognormalDelay = {
     type: DelayType.Lognormal,
-    median: number, // 90
-    sigma: number // 0.1
+    median: number,
+    sigma: number
 }
 
 export type UniformDelay = {
     type: DelayType.Uniform,
-    lower: number, // 15
-    upper: number // 25
+    lower: number, 
+    upper: number 
 }
 
 export type ChunkedDribbleDelay = {
     type: DelayType.ChunkedDribble,
-    numberOfChunks: number, // 5
-    duration: number // 1000
+    numberOfChunks: number,
+    duration: number
 }
 export type FixedDelay = {
     type: DelayType.Fixed,
-    delay: number // 1000
+    delay: number
 }
 
 export type DelayData = {

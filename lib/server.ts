@@ -80,6 +80,13 @@ export class MockingServer {
                 }
             },
             {
+                path: "/api/v1/mock-bad-path",
+                method: "post",
+                handler: (req: express.Request, res: express.Response): Promise<void> | void => {
+                    res.status(404).end();
+                }
+            },
+            {
                 path: "*",
                 method: "post",
                 handler: [...this.mockingEngineInstance().getSimulatorHandlers()]
